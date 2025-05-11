@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <form action="{{ url_for('admin_login') }}" method="POST">
         <label for="email">Admin Email:</label>
         <input type="text" name="email" id="email" required><br>
@@ -19,5 +25,4 @@
             <p style="color: red">{{ error_message }}</p>
         {% endif %}
     </form>
-</body>
-</html>
+{% endblock %}

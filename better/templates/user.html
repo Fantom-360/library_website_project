@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}User{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <h1>Welcome back, {{ username }}</h1>
     <ul>
         <li><a href="{{ url_for('favorite') }}">Favorite Books</a></li>
@@ -13,5 +19,4 @@
         <li><a href="{{ url_for('books') }}">Browse Books</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
-</body>
-</html>
+{% endblock %}

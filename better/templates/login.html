@@ -1,22 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="{{ url_for('login') }}" method="POST">
-        <label for="identifier">Email or Username:</label>
-        <input type="text" name="identifier" id="identifier" required><br>
-    
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br>
+{% extends "base.html" %}
 
-        <button type="submit">Submit</button>
-    </form>
-    {% if error_message %}
-        <p style="color: red">{{ error_message }}</p>
-    {% endif %}
-</body>
-</html>
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="w-full max-w-sm bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-center mb-6">Login</h2>
+
+        <form action="{{ url_for('login') }}" method="POST" class="space-y-4">
+            <div>
+                <label for="identifier" class="block text-sm font-medium text-gray-700">Email or Username:</label>
+                <input type="text" name="identifier" id="identifier" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
+                <input type="password" name="password" id="password" required
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        {% if error_message %}
+        <p class="mt-4 text-red-500 text-sm text-center">{{ error_message }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -16,7 +16,7 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 def get_db():
-    db = sqlite3.connect('better/library.db')
+    db = sqlite3.connect("better/library.db", check_same_thread=False)
     db.row_factory = sqlite3.Row
     return db
 
@@ -173,24 +173,24 @@ def borrow_book(book_id):
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
-@app.route('/books/return/<int:book_id>', methods=['POST'])
-def return_book(book_id):
-    if 'user_id' not in session:
-        logging.warning("Unauthorized access to /user")
-        return redirect(url_for('login'))
-    
-    user_id = session['user_id']
-
-    query = """
-        UPDATE borrowed_books
-        SET returned_at = ?
-        WHERE user_id = ? AND book_id = ? AND returned_at IS NULL
-    """
-    now = datetime.now()
-    cursor.execute(query, (now, user_id, book_id))
-    db.commit()
-    logging.info(f"User {user_id} returned book {book_id}")
-    return redirect(url_for('borrow_history'))
+#@app.route('/books/return/<int:book_id>', methods=['POST'])
+#def return_book(book_id):
+#    if 'user_id' not in session:
+#        logging.warning("Unauthorized access to /user")
+#        return redirect(url_for('login'))
+#    
+#    user_id = session['user_id']
+#
+#    query = """
+#        UPDATE borrowed_books
+#        SET returned_at = ?
+#        WHERE user_id = ? AND book_id = ? AND returned_at IS NULL
+#    """
+#    now = datetime.now()
+#    cursor.execute(query, (now, user_id, book_id))
+#    db.commit()
+#    logging.info(f"User {user_id} returned book {book_id}")
+#    return redirect(url_for('borrow_history'))
     
 @app.route('/search')
 def search():
@@ -280,6 +280,12 @@ def add_book():
         published_year = request.form.get('published_year')
         genre = request.form.get('genre')
         cover_image = request.files.get('cover_image')
+        pdf_file= request.files.get('pdf_file')
+
+        if pdf_file and pdf_file.filename != '':
+            pdf_filename = secure_filename(pdf_file.filename)
+            pdf_path = os.path.join('static','pdfs', pdf_filename)
+            pdf_file.save(pdf_path)
 
         filename = None
         if cover_image and cover_image.filename != '':
@@ -287,11 +293,11 @@ def add_book():
             cover_image.save(os.path.join('static', 'images', filename))
 
         query = """
-            INSERT INTO books (title, author, description, published_year, genre, is_available, cover_image)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO books (title, author, description, published_year, genre, is_available, cover_image, pdf_file)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
 
-        values = (title, author, description, published_year, genre, True, filename)
+        values = (title, author, description, published_year, genre, True, filename, pdf_filename)
 
         try:
             cursor.execute(query, values)
@@ -324,6 +330,12 @@ def update_book(book_id):
         published_year = request.form.get('published_year')
         genre = request.form.get('genre')
         new_image = request.files.get('cover_image')
+        new_pdf = request.files.get('pdf_file')
+        pdf_filename = book['pdf_file']
+
+        if new_pdf and new_pdf.filename != '':
+            pdf_filename = secure_filename(new_pdf.filename)
+            new_pdf.save(os.path.join('static', 'pdfs', pdf_filename))
 
         if new_image and new_image.filename != '':
             filename = secure_filename(new_image.filename)
@@ -338,10 +350,11 @@ def update_book(book_id):
             description = ?,
             published_year = ?,
             genre = ?,
-            cover_image = ?
+            cover_image = ?,
+            pdf_file = ?
             WHERE id = ?
         """
-        values = (title, author, description, published_year, genre, filename, book_id)
+        values = (title, author, description, published_year, genre, filename, pdf_filename, book_id)
 
         try:
             cursor.execute(update_query, values)

@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Borrow History</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <h1>Your Borrow History</h1>
 
     {% if history %}
@@ -25,5 +31,4 @@
     {% else %}
         <p>No borrow history found~ nya~</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

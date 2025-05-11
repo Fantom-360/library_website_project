@@ -1,36 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Welcome to the Library</h1>
+{% extends "base.html" %}
 
-    <div>
-        {% if session.get('user_id') %}
-            <p>Welcome, {{ session['username'] }}!</p>
-            <a href="{{ url_for('user') }}">Your Dashboard</a><br>
-            <a href="{{ url_for('books') }}">Browse Books</a><br>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% elif session.get('admin_id') %}
-            <p>Welcome, Admin!</p>
-            <a href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a><br>
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-            <a href="{{ url_for('login') }}">User Login</a><br>
-            <a href="{{ url_for('register') }}">Register</a><br>
-        {% endif %}
+{% block title %}Index{% endblock %}
+
+{% block content %}
+<div class="bg-gray-50 py-10">
+    <!-- Main container with flex layout -->
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <!-- Left side content -->
+            <div class="space-y-6">
+                <h1 class="text-4xl font-extrabold text-center sm:text-5xl text-blue-600">Welcome to the Library</h1>
+
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    {% if session.get('user_id') %}
+                        <p class="text-lg text-gray-700">Welcome, {{ session['username'] }}!</p>
+                        <div class="mt-4 space-y-2">
+                            <a href="{{ url_for('user') }}" class="block text-blue-600 hover:text-blue-800">Your Dashboard</a>
+                            <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800">Browse Books</a>
+                            <a href="{{ url_for('logout') }}" class="block text-blue-600 hover:text-blue-800">Logout</a>
+                        </div>
+                    {% elif session.get('admin_id') %}
+                        <p class="text-lg text-gray-700">Welcome, Admin!</p>
+                        <div class="mt-4 space-y-2">
+                            <a href="{{ url_for('admin_dashboard') }}" class="block text-blue-600 hover:text-blue-800">Admin Dashboard</a>
+                            <a href="{{ url_for('logout') }}" class="block text-blue-600 hover:text-blue-800">Logout</a>
+                        </div>
+                    {% else %}
+                        <p class="text-lg text-gray-700">Please log in or register.</p>
+                    {% endif %}
+                </div>
+
+                <hr class="my-6 border-t-2 border-gray-300">
+
+                <div class="space-y-2">
+                    <a href="{{ url_for('about_us') }}" class="block text-blue-600 hover:text-blue-800">About Us</a>
+                    <a href="{{ url_for('faq') }}" class="block text-blue-600 hover:text-blue-800">FAQ</a>
+                    <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800">Books</a>
+                    <a href="{{ url_for('search') }}" class="block text-blue-600 hover:text-blue-800">Search</a>
+                </div>
+            </div>
+
+            <!-- Right side (for images) -->
+            <div class="flex justify-center items-center">
+                <div class="w-full max-w-md">
+                    <!-- Placeholder image for now, to be replaced later -->
+                    <img src="https://via.placeholder.com/500x300" alt="Library image" class="w-full rounded-lg shadow-md">
+                </div>
+            </div>
+        </div>
     </div>
-
-    <hr>
-
-    <div>
-        <a href="{{ url_for('about_us') }}">About Us</a><br>
-        <a href="{{ url_for('faq') }}">FAQ</a><br>
-        <a href="{{ url_for('books') }}">Books</a><br>
-        <a href="{{ url_for('search') }}">Search</a><br>
-    </div>
-</body>
-</html>
+</div>
+{% endblock %}

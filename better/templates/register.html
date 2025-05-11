@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <form action="{{ url_for('register') }}" method="POST">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required><br>
@@ -18,5 +24,4 @@
 
         <button type="submit">Submit</button>
     </form>
-</body>
-</html>
+{% endblock %}

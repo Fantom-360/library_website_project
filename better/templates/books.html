@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Books</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <form action="{{ url_for('search') }}" method="GET">
         <input type="text" name="query" placeholder="Search by title or author..." required>
         <button type="submit">Search</button>
@@ -17,5 +23,4 @@
             <li><a href="{{ url_for('book_details', book_id=book.id) }}">{{ book.title }}</a></li>
         {% endfor %}
     </ul>
-</body>
-</html>
+{% endblock %}

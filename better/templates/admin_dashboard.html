@@ -1,11 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
     <h1>Admin Dashboard</h1>
     <ul>
         <li>Total Users: {{ total_users }}</li>
@@ -15,5 +21,4 @@
     </ul>
 
     <a href="{{ url_for('add_book') }}">Add_book</a>
-</body>
-</html>
+{% endblock %}
