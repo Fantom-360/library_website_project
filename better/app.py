@@ -3,18 +3,20 @@ import sqlite3
 import hashlib
 import logging
 import os
+
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
-if os.path.exists('better/logs/report.log'):
-    with open('better/logs/report.log', 'w') as file:
-        file.close()
-    
+os.makedirs('better/logs', exist_ok=True)
+log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M-%S.log")
+log_path = os.path.join('better/logs', log_filename)
+
 logging.basicConfig(
-    filename='better/logs/report.log',
+    filename=log_path,
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
 def get_db():
     db = sqlite3.connect("better/library.db", check_same_thread=False)
     db.row_factory = sqlite3.Row
