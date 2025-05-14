@@ -1,10 +1,12 @@
-from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory
+from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, send_file
 import sqlite3
 import hashlib
 import logging
 import os
+import matplotlib.pyplot as plt
+import io
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
 os.makedirs('better/logs', exist_ok=True)
@@ -67,10 +69,10 @@ def register():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
-
+        now = datetime.now()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-        query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+        query = "INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, ?)"
         value = (username, email, password_hash)
         try:
             cursor.execute(query, value)
@@ -100,6 +102,25 @@ def user():
     username = session.get('username')
 
     return render_template("user.html", username=username)
+
+@app.route('/user/delete', methods=['POST'])
+def delete_account():
+    if 'user_id' not in session:
+        logging.warning("Unauthorized attempt to delete account")
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    user_email = session.get('email', 'unknown')
+
+    # Optional: Delete borrowed_books, favorites, etc. too
+    cursor.execute("DELETE FROM borrowed_books WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM favorites WHERE user_id = ?", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    db.commit()
+
+    logging.info(f"User {user_email} deleted their account.")
+    session.clear()
+    return redirect(url_for('home'))
 
 @app.route('/user/favorite')
 def favorite():
@@ -171,7 +192,8 @@ def borrow_book(book_id):
        logging.warning(f"book id: {book_id} PDF is missing")
        return "book not found or missing PDF"
  
-   cursor.execute("INSERT INTO borrowed_books (user_id, book_id) VALUES (?, ?)", (user_id, book_id))
+   now = datetime.now()
+   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (?, ?, ?)", (user_id, book_id, now))
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
@@ -265,8 +287,50 @@ def admin_dashboard():
                            total_users=total_users,
                            total_books=total_books,
                            online_users=online_users,
-                           borrow_stats=borrow_stats)
+                           borrow_stats=borrow_stats,
+                           now=datetime.now)
 
+@app.route('/admin/graph.png')
+def admin_graph():
+    now = datetime.now()
+    user_counts = []
+    borrow_counts = []
+    labels = []
+
+    for i in range(12, 0, -1):  # 12 intervals of 10 minutes
+        start_time = now - timedelta(minutes=i * 10)
+        end_time = now - timedelta(minutes=(i - 1) * 10)
+
+        labels.append(start_time.strftime('%H:%M'))
+
+        cursor.execute("""
+            SELECT COUNT(*) as count FROM users
+            WHERE datetime(created_at) BETWEEN ? AND ?
+        """, (start_time, end_time))
+        user_counts.append(cursor.fetchone()['count'])
+
+        cursor.execute("""
+            SELECT COUNT(*) as count FROM borrowed_books
+            WHERE datetime(borrowed_at) BETWEEN ? AND ?
+        """, (start_time, end_time))
+        borrow_counts.append(cursor.fetchone()['count'])
+
+    # Plot only after collecting all data
+    fig, ax = plt.subplots()
+    ax.plot(labels, user_counts, label='Users Registered', marker='o')
+    ax.plot(labels, borrow_counts, label='Books Borrowed', marker='s')
+    ax.set_title("Library Stats (Last 2 Hours)")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Count")
+    ax.legend()
+    ax.grid(True)
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close(fig)
+    return send_file(buf, mimetype='image/png')
+    
 @app.route('/admin/books/add', methods=['GET', 'POST'])
 def add_book():
     error_message = None

@@ -19,4 +19,9 @@
         <li><a href="{{ url_for('books') }}">Browse Books</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
     </ul>
+    <form method="POST" action="{{ url_for('delete_account') }}">
+        <button type="submit">
+            delete account
+        </button>
+    </form>
 {% endblock %}
