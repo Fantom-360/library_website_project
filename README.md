@@ -20,4 +20,4 @@
 
 ## Ideas:
 >[!NOTE]
->Ideas as whole should be discused and than if agreed on applied above
+>Ideas as whole should be discused and than if agreed on, applied above
