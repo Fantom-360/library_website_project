@@ -14,9 +14,9 @@
     
     <!-- Desktop Menu -->
     <div class="hidden md:flex space-x-6">
-      <a href="/" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
-      <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
-      <a href="/register" class="text-gray-700 hover:text-blue-600 font-medium">Register</a>
+      <a href="{{ url_for('home') }}" class="text-gray-700 hover:text-blue-600 font-medium">Home</a>
+      <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-blue-600 font-medium">Login</a>
+      <a href="{{ url_for('register') }}" class="text-gray-700 hover:text-blue-600 font-medium">Register</a>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -31,9 +31,9 @@
 
     <!-- Mobile Dropdown Menu -->
     <div id="mobile-menu" class="hidden md:hidden mt-2 space-y-2">
-    <a href="/" class="block text-gray-700 hover:text-blue-600 font-medium">Home</a>
-    <a href="/login" class="block text-gray-700 hover:text-blue-600 font-medium">Login</a>
-    <a href="/register" class="block text-gray-700 hover:text-blue-600 font-medium">Register</a>
+    <a href="{{ url_for('home') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Home</a>
+    <a href="{{ url_for('login') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Login</a>
+    <a href="{{ url_for('register') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Register</a>
     </div>
   </div>
   </nav>

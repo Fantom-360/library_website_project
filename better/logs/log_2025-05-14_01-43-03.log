@@ -1,0 +1,13 @@
+2025-05-14 01:43:03,371 - WARNING -  * Debugger is active!
+2025-05-14 01:43:03,376 - INFO -  * Debugger PIN: 975-897-341
+2025-05-14 01:43:11,129 - INFO - 127.0.0.1 - - [14/May/2025 01:43:11] "GET / HTTP/1.1" 200 -
+2025-05-14 01:43:14,907 - INFO - 127.0.0.1 - - [14/May/2025 01:43:14] "GET /login HTTP/1.1" 200 -
+2025-05-14 01:43:23,738 - INFO - 127.0.0.1 - - [14/May/2025 01:43:23] "GET /login/admin HTTP/1.1" 200 -
+2025-05-14 01:43:43,235 - INFO - Admin admin@example.com logged in successfully
+2025-05-14 01:43:43,236 - INFO - 127.0.0.1 - - [14/May/2025 01:43:43] "[32mPOST /login/admin HTTP/1.1[0m" 302 -
+2025-05-14 01:43:43,265 - INFO - 127.0.0.1 - - [14/May/2025 01:43:43] "GET /admin HTTP/1.1" 200 -
+2025-05-14 01:43:43,792 - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-05-14 01:43:43,795 - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-05-14 01:43:43,796 - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-05-14 01:43:43,797 - INFO - Using categorical units to plot a list of strings that are all parsable as floats or dates. If these strings should be plotted as numbers, cast to the appropriate data type before plotting.
+2025-05-14 01:43:43,984 - INFO - 127.0.0.1 - - [14/May/2025 01:43:43] "GET /admin/graph.png?=2025-05-14%2001:43:43.264645 HTTP/1.1" 200 -

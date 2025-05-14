@@ -20,5 +20,10 @@
         <li>Users Online (past 5 mins): {{ online_users }}</li>
     </ul>
 
+    <h2 class="text-xl font-bold mt-4">Lib Activity (last 2 hours)</h2>
+    <img src="{{ url_for('admin_graph') }}?={{ now() }}" 
+         alt="Library Graph"
+         class="mt-4 border border/gray-300 rounded-lg shadow w-full max-w-3xl">
+
     <a href="{{ url_for('add_book') }}">Add_book</a>
 {% endblock %}
