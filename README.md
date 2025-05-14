@@ -3,6 +3,8 @@
 >[!TIP]
 >After you done working, `git fetch` > `git pull` > `git commit` > `git push` alternative, `git merge`
 
+
+## Tasks / Progress
 >[!NOTE]
 >Tasks will be written and sorted here
 
