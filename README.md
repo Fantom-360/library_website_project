@@ -1,8 +1,7 @@
 # library_website_project
 
 >[!TIP]
->After you done working, `git fetch` > `git pull` > `git commit` > `git push`
->Also if you doing stuff into your branch, `git merge`
+>After you done working, `git fetch` > `git pull` > `git commit` > `git push` alternative, `git merge`
 
 >[!NOTE]
 >Tasks will be written and sorted here
