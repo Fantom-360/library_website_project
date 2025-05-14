@@ -1,7 +1,7 @@
 # library_website_project
 
 >[!NOTE]
->Here you'll add Tasks
+>Tasks will be written and sorted here
 
 ### TO DO *FrontEnd:*
 - [x] Create the homepage with responsive layout
@@ -16,3 +16,7 @@
 
 ### TO DO *Lead:*
 - [x] Set up basic project structure (`templates/`, `static/`, `app.py`)
+
+
+## Ideas:
+
