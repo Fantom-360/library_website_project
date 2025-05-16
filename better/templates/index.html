@@ -4,34 +4,38 @@
 
 {% block content %}
 <div>
+
     <!-- Hero Section -->
-    <div class="bg-blue-600 text-white py-16">
+    <div class="bg-gradient-to-r from-blue-900 to-blue-500 text-white py-20">
         <div class="container mx-auto px-4 text-center">
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold">Welcome to the Online Library</h1>
-            <p class="mt-4 text-base sm:text-lg lg:text-xl max-w-2xl mx-auto">
-                Explore a world of knowledge, discover your next favorite book, and connect with our community.
+            <h1 class="text-4xl sm:text-5xl font-extrabold">Welcome to the Online Library</h1>
+            <p class="mt-4 text-lg max-w-2xl mx-auto">
+                Discover your next favorite book, learn something new, and join our growing community of readers.
             </p>
             <div class="mt-6 flex flex-col sm:flex-row justify-center gap-4">
-                <a href="{{ url_for('books') }}" class="bg-white text-blue-600 px-6 py-3 rounded-lg shadow hover:bg-gray-100">Browse Books</a>
-                <a href="{{ url_for('register') }}" class="bg-blue-700 px-6 py-3 rounded-lg shadow hover:bg-blue-800">Join Now</a>
+                <a href="{{ url_for('books') }}" class="bg-white text-blue-700 font-medium px-6 py-3 rounded-lg shadow-md hover:bg-gray-100 transition">Browse Books</a>
+                <a href="{{ url_for('register') }}" class="bg-blue-800 px-6 py-3 font-medium rounded-lg shadow-md hover:bg-blue-900 transition">Join Now</a>
             </div>
         </div>
     </div>
 
     <!-- Search Bar -->
-    <div class="py-6">
+    <div class="py-8 bg-gray-100">
         <div class="container mx-auto px-4">
             <form action="{{ url_for('search') }}" method="get" class="flex flex-col sm:flex-row items-center gap-4">
-                <input
-                    type="text"
-                    name="q"
-                    placeholder="Search books, authors, or genres..."
-                    class="w-full sm:flex-1 px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                >
+                <div class="relative w-full sm:flex-1">
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="Search books, authors, or genres..."
+                        class="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    >
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">🔍</span>
+                </div>
                 <button
                     type="submit"
-                    class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow"
+                    class="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow transition"
                 >
                     Search
                 </button>
@@ -40,36 +44,37 @@
     </div>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-10">
+    <div class="container mx-auto px-4 py-12">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
             <!-- Left Panel -->
             <div class="space-y-6 text-base sm:text-lg">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+                <div class="bg-white p-6 rounded-lg shadow-md">
                     {% if session.get('user_id') %}
-                        <p class="text-gray-700 dark:text-white text-lg">Welcome, {{ session['username'] }}!</p>
+                        <p class="text-gray-800 text-lg font-semibold">Welcome, {{ session['username'] }}!</p>
                         <div class="mt-4 space-y-2">
-                            <a href="{{ url_for('user') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">Your Dashboard</a>
-                            <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">Browse Books</a>
-                            <a href="{{ url_for('logout') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">Logout</a>
+                            <a href="{{ url_for('user') }}" class="block text-blue-600 hover:text-blue-800">Your Dashboard</a>
+                            <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800">Browse Books</a>
+                            <a href="{{ url_for('logout') }}" class="block text-blue-600 hover:text-blue-800">Logout</a>
                         </div>
                     {% elif session.get('admin_id') %}
-                        <p class="text-gray-700 text-lg">Welcome, Admin!</p>
+                        <p class="text-gray-800 text-lg font-semibold">Welcome, Admin!</p>
                         <div class="mt-4 space-y-2">
                             <a href="{{ url_for('admin_dashboard') }}" class="block text-blue-600 hover:text-blue-800">Admin Dashboard</a>
                             <a href="{{ url_for('logout') }}" class="block text-blue-600 hover:text-blue-800">Logout</a>
                         </div>
                     {% else %}
-                        <p class="text-gray-700 dark:text-white">Please log in or register to access our library.</p>
+                        <p class="text-gray-700">Please log in or register to access our library.</p>
                     {% endif %}
                 </div>
 
                 <hr class="my-6 border-gray-300">
 
                 <div class="space-y-2">
-                    <a href="{{ url_for('about_us') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">About Us</a>
-                    <a href="{{ url_for('faq') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">FAQ</a>
-                    <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">Books</a>
-                    <a href="{{ url_for('search') }}" class="block text-blue-600 hover:text-blue-800 dark:text-blue-400">Search</a>
+                    <a href="{{ url_for('about_us') }}" class="block text-blue-600 hover:text-blue-800">About Us</a>
+                    <a href="{{ url_for('faq') }}" class="block text-blue-600 hover:text-blue-800">FAQ</a>
+                    <a href="{{ url_for('books') }}" class="block text-blue-600 hover:text-blue-800">Books</a>
+                    <a href="{{ url_for('search') }}" class="block text-blue-600 hover:text-blue-800">Search</a>
                 </div>
             </div>
 
@@ -83,19 +88,20 @@
     </div>
 
     <!-- Featured Books Section -->
-    <div class="py-12">
+    <div class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
-            <h2 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white">Featured Books</h2>
+            <h2 class="text-3xl font-bold text-center text-gray-800">Featured Books</h2>
             <div class="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {% for _ in range(4) %}
-                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+                <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
                     <img src="https://media.istockphoto.com/id/1385337819/cs/vektor/studenti-vyhled%C3%A1vaj%C3%AD-u%C4%8D%C3%AD-se-a-%C4%8Dtou-knihy-v-datab%C3%A1zi.jpg?s=612x612&w=0&k=20&c=vMOZOV9o0fkIVpUOjoDdlunHvj0TD7DOFDtl8UKEiKw=" alt="Book Cover" class="w-full h-auto rounded-lg">
-                    <h3 class="mt-4 text-lg font-bold text-gray-800 dark:text-white">Book Title</h3>
-                    <p class="text-sm text-gray-600 dark:text-white">Author Name</p>
+                    <h3 class="mt-4 text-lg font-bold text-gray-800">Book Title</h3>
+                    <p class="text-sm text-gray-600">Author Name</p>
                 </div>
                 {% endfor %}
             </div>
         </div>
     </div>
+
 </div>
 {% endblock %}

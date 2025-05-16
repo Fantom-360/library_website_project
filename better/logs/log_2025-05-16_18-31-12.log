@@ -1,0 +1,39 @@
+2025-05-16 18:31:12,544 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-16 18:31:12,544 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-16 18:31:12,545 - INFO -  * Restarting with stat
+2025-05-16 18:31:12,834 - WARNING -  * Debugger is active!
+2025-05-16 18:31:12,838 - INFO -  * Debugger PIN: 749-136-600
+2025-05-16 18:31:13,547 - INFO - 127.0.0.1 - - [16/May/2025 18:31:13] "GET / HTTP/1.1" 200 -
+2025-05-16 18:31:33,049 - INFO - 127.0.0.1 - - [16/May/2025 18:31:33] "GET /books HTTP/1.1" 200 -
+2025-05-16 18:31:56,396 - INFO - 127.0.0.1 - - [16/May/2025 18:31:56] "GET / HTTP/1.1" 200 -
+2025-05-16 18:32:16,056 - INFO - 127.0.0.1 - - [16/May/2025 18:32:16] "GET /register HTTP/1.1" 200 -
+2025-05-16 18:33:16,404 - INFO - 127.0.0.1 - - [16/May/2025 18:33:16] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:33:38,400 - INFO - 127.0.0.1 - - [16/May/2025 18:33:38] "GET / HTTP/1.1" 200 -
+2025-05-16 18:33:56,734 - INFO - 127.0.0.1 - - [16/May/2025 18:33:56] "GET / HTTP/1.1" 200 -
+2025-05-16 18:34:05,337 - INFO - 127.0.0.1 - - [16/May/2025 18:34:05] "GET / HTTP/1.1" 200 -
+2025-05-16 18:34:42,796 - INFO - 127.0.0.1 - - [16/May/2025 18:34:42] "GET /register HTTP/1.1" 200 -
+2025-05-16 18:34:44,004 - INFO - 127.0.0.1 - - [16/May/2025 18:34:44] "GET / HTTP/1.1" 200 -
+2025-05-16 18:36:57,570 - INFO - 127.0.0.1 - - [16/May/2025 18:36:57] "GET / HTTP/1.1" 200 -
+2025-05-16 18:37:13,016 - INFO - 127.0.0.1 - - [16/May/2025 18:37:13] "GET / HTTP/1.1" 200 -
+2025-05-16 18:37:38,306 - INFO - 127.0.0.1 - - [16/May/2025 18:37:38] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:38:07,370 - INFO - 127.0.0.1 - - [16/May/2025 18:38:07] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:39:30,736 - INFO - 127.0.0.1 - - [16/May/2025 18:39:30] "GET / HTTP/1.1" 200 -
+2025-05-16 18:39:30,748 - INFO - 127.0.0.1 - - [16/May/2025 18:39:30] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:39:55,012 - INFO - 127.0.0.1 - - [16/May/2025 18:39:55] "GET / HTTP/1.1" 200 -
+2025-05-16 18:39:55,024 - INFO - 127.0.0.1 - - [16/May/2025 18:39:55] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:40:02,420 - INFO - 127.0.0.1 - - [16/May/2025 18:40:02] "GET / HTTP/1.1" 200 -
+2025-05-16 18:40:02,434 - INFO - 127.0.0.1 - - [16/May/2025 18:40:02] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:40:56,864 - INFO - 127.0.0.1 - - [16/May/2025 18:40:56] "GET / HTTP/1.1" 200 -
+2025-05-16 18:41:05,309 - INFO - 127.0.0.1 - - [16/May/2025 18:41:05] "GET / HTTP/1.1" 200 -
+2025-05-16 18:41:22,567 - INFO - 127.0.0.1 - - [16/May/2025 18:41:22] "GET / HTTP/1.1" 200 -
+2025-05-16 18:41:38,327 - INFO - 127.0.0.1 - - [16/May/2025 18:41:38] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:42:37,696 - INFO - 127.0.0.1 - - [16/May/2025 18:42:37] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:42:43,206 - INFO - 127.0.0.1 - - [16/May/2025 18:42:43] "GET / HTTP/1.1" 200 -
+2025-05-16 18:42:43,221 - INFO - 127.0.0.1 - - [16/May/2025 18:42:43] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:43:59,065 - INFO - 127.0.0.1 - - [16/May/2025 18:43:59] "GET / HTTP/1.1" 200 -
+2025-05-16 18:43:59,077 - INFO - 127.0.0.1 - - [16/May/2025 18:43:59] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:44:21,783 - INFO - 127.0.0.1 - - [16/May/2025 18:44:21] "GET / HTTP/1.1" 200 -
+2025-05-16 18:44:21,802 - INFO - 127.0.0.1 - - [16/May/2025 18:44:21] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+2025-05-16 18:44:38,724 - INFO -  * Detected change in 'c:\\Users\\JacobGMS\\Desktop\\School Project\\library_website_project-2\\better\\app.py', reloading
+2025-05-16 18:44:38,763 - INFO -  * Restarting with stat
