@@ -69,11 +69,16 @@ def register():
         username = request.form.get('username')
         email = request.form.get('email')
         password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        if password != confirm_password:
+            error_message = "Womp Womp the paswords arent the same"
+            return render_template('register.html', error_message=error_message)
+        
         now = datetime.now()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
         query = "INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, ?)"
-        value = (username, email, password_hash)
+        value = (username, email, password_hash, now)
         try:
             cursor.execute(query, value)
             db.commit()
