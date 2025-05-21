@@ -11,12 +11,14 @@
 ### TO DO *FrontEnd:*
 - [x] Create the homepage with responsive layout
 - [x] Add Dark Mode option
+- [ ] Created About Us page
 - [ ] Style with Tailwind for mobile & desktop views
 - [ ] Test responsiveness at various screen sizes
 
 ### TO DO *BackEnd:*
 - [x] Add login/register functionality
 - [x] Set up user/admin session handling
+- [ ] Bypass flask loading for static images because of 500 server internal error
 - [ ] Dynamically load featured books from database
 
 ### TO DO *Lead:*
