@@ -74,7 +74,7 @@ def register():
             error_message = "Womp Womp the paswords arent the same"
             return render_template('register.html', error_message=error_message)
         
-        now = datetime.now()
+        now = datetime.now().isoformat()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
         query = "INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, ?)"
@@ -197,7 +197,7 @@ def borrow_book(book_id):
        logging.warning(f"book id: {book_id} PDF is missing")
        return "book not found or missing PDF"
  
-   now = datetime.now()
+   now = datetime.now().isoformat()
    cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (?, ?, ?)", (user_id, book_id, now))
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
@@ -297,7 +297,7 @@ def admin_dashboard():
 
 @app.route('/admin/graph.png')
 def admin_graph():
-    now = datetime.now()
+    now = datetime.now().isoformat()
     user_counts = []
     borrow_counts = []
     labels = []
@@ -464,13 +464,16 @@ def faq():
 
 @app.before_request
 def update_last_seen():
-    now = datetime.now()
-    if 'user_id' in session:
-        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['user_id']))
+    # Skip updating last_seen for static files
+    if request.path.startswith('/static'):
+        return
+    now = datetime.now().isoformat()
+    if 'user_id' in session or 'admin_id' in session:
+        user_id = session.get('user_id') or session.get('admin_id')
+        cursor = db.cursor()
+        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, user_id))
         db.commit()
-    elif 'admin_id' in session:
-        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['admin_id']))
-        db.commit()
+        cursor.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

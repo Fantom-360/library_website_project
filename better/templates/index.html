@@ -20,7 +20,7 @@
     </div>
 
     <!-- Search Bar -->
-    <div class="py-8 bg-gray-100">
+    <div class="py-8 bg-gray-100 dark:bg-gray-900">
         <div class="container mx-auto px-4">
             <form action="{{ url_for('search') }}" method="get" class="flex flex-col sm:flex-row items-center gap-4">
                 <div class="relative w-full sm:flex-1">
@@ -88,9 +88,9 @@
     </div>
 
     <!-- Featured Books Section -->
-    <div class="py-12 bg-gray-50">
+    <div class="py-12 bg-gray-50 dark:bg-gray-900">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-gray-800">Featured Books</h2>
+            <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white">Featured Books</h2>
             <div class="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {% for _ in range(4) %}
                 <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
