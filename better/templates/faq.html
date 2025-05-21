@@ -1,28 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Faq{% endblock %}
+{% block title %}FAQ{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
+            Frequently Asked Questions
+        </h1>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
-    <h1>Frequently Asked Questions</h1>
-
-    <h3>Q: How do I register?</h3>
-    <p>A: Just go to the login page and click “register”!</p>
-
-    <h3>Q: Can I borrow multiple books?</h3>
-    <p>A: Of course, as long as they’re available</p>
-
-    <h3>Q: How do I return a book?</h3>
-    <p>A: Go to your user page and click the “Return” button next to the book!</p>
-
-    <h3>Q: Is there an admin?</h3>
-    <p>A: Maaaaybe~ but shhh... they’re watching</p>
+        <ul class="mt-6 space-y-4 text-lg text-gray-800 dark:text-white">
+            <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                <strong>Q: How do I register?</strong><br>
+                A: Just go to the login page and click “register”!
+            </li>
+            <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                <strong>Q: Can I borrow multiple books?</strong><br>
+                A: Of course, as long as they’re available.
+            </li>
+            <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                <strong>Q: How do I return a book?</strong><br>
+                A: Go to your user page and click the “Return” button next to the book!
+            </li>
+            <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+                <strong>Q: Is there an admin?</strong><br>
+                A: Maaaaybe~ but shhh... they’re watching 👀
+            </li>
+        </ul>
+    </div>
+</div>
 {% endblock %}

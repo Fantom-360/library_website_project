@@ -3,24 +3,25 @@
 {% block title %}Favorites{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
+            Your Favourite Books
+        </h1>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Favourite Books</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
-    <h1>Your Favourite Books</h1>
-
-    {% if fav_books %}
-        <ul>
-            {% for book in fav_books %}
-                <li>{{ book.title }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You have no favorite books... yet~ 🐾</p>
-    {% endif %}
+        {% if fav_books %}
+            <ul class="space-y-3 text-lg">
+                {% for book in fav_books %}
+                    <li class="bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded text-gray-800 dark:text-white shadow-sm">
+                        📖 {{ book.title }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-gray-600 dark:text-gray-300 text-lg">
+                You have no favorite books... yet~ 🐾
+            </p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

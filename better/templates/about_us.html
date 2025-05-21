@@ -3,16 +3,55 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-5xl mx-auto py-12 px-6">
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 space-y-10 transition duration-300">
+        <!-- Hero Section -->
+        <div class="text-center space-y-4">
+            <div class="text-5xl">📖</div>
+            <h1 class="text-4xl font-extrabold text-gray-800 dark:text-white">About Our Library</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                Built with love & logic, our digital library is your cozy corner of the internet to explore, borrow, and fall in love with books.
+            </p>
+        </div>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Divider -->
+        <hr class="border-gray-300 dark:border-gray-600">
 
+        <!-- Mission Statement -->
+        <div class="text-center space-y-4">
+            <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-200">Why We Exist</h2>
+            <p class="text-md text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Our mission is simple: make reading fun, accessible, and meaningful for everyone.
+                Whether you're here to borrow a book, find your next favorite author, or just chill — we're happy to have you.
+            </p>
+        </div>
 
-    <h1>About Our Libraly</h1>
-    <p>Welcome to our cozy digital library!</p>
-    <p>We built this platform with love and logic so users can borrow, explore, and cherish books</p>
+        <!-- Meet the Team -->
+        <div class="text-center space-y-6">
+            <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-200">Meet the Team</h2>
+            <div class="flex flex-wrap justify-center gap-8">
+                <div class="w-40 text-center">
+                    <img src="{{ url_for('static', filename='images/Fantom-360.png') }}" class="rounded-full shadow-md hover:scale-105 transition duration-300" alt="Team Member 1">
+                    <p class="mt-2 font-semibold text-gray-800 dark:text-white">Fantom-360</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Backend Wizard</p>
+                </div>
+                <div class="w-40 text-center">
+                    <img src="{{ url_for('static', filename='images/JacobGMS.jpeg') }}" class="rounded-full shadow-md hover:scale-105 transition duration-300" alt="Team Member 2">
+                    <p class="mt-2 font-semibold text-gray-800 dark:text-white">JacobGMS</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Frontend Alchemist</p>
+                </div>
+                <div class="w-40 text-center">
+                    <img src="{{ url_for('static', filename='images/Wilicze022.png') }}" class="rounded-full shadow-md hover:scale-105 transition duration-300" alt="Team Member 3">
+                    <p class="mt-2 font-semibold text-gray-800 dark:text-white">Wilicze022</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">UI/UX Enchanter</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fun Footer Text -->
+        <div class="text-center text-gray-500 dark:text-gray-400 pt-6 border-t dark:border-gray-700">
+            Powered by passion, pixels & a little bit of coffee ☕
+        </div>
+    </div>
+</div>
 {% endblock %}

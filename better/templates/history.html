@@ -3,32 +3,31 @@
 {% block title %}History{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
+            Your Borrow History
+        </h1>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borrow History</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
-    <h1>Your Borrow History</h1>
-
-    {% if history %}
-        <ul>
-            {% for entry in history %}
-                <li>
-                    <strong>{{ entry.title }}</strong><br>
-                    Borrowed: {{ entry.borrow_date }}<br>
-                    {% if entry.return_date %}
-                        Returned: {{ entry.return_date }}
-                    {% else %}
-                        <em>Not returned yet</em>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No borrow history found~ nya~</p>
-    {% endif %}
+        {% if history %}
+            <ul class="space-y-4 text-gray-800 dark:text-white text-lg">
+                {% for entry in history %}
+                    <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded shadow-sm">
+                        <p><strong>📖 {{ entry.title }}</strong></p>
+                        <p>Borrowed: {{ entry.borrow_date }}</p>
+                        {% if entry.return_date %}
+                            <p>Returned: {{ entry.return_date }}</p>
+                        {% else %}
+                            <p class="italic text-yellow-600 dark:text-yellow-400">Not returned yet</p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-gray-600 dark:text-gray-300 text-lg">
+                No borrow history found~ nya~ 🐾
+            </p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

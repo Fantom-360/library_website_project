@@ -3,28 +3,27 @@
 {% block title %}Search Results{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-4xl mx-auto py-12 px-4">
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
+            Search results for: "{{ search_term }}"
+        </h1>
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search results for "{{ search_term }}"</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
-
-    <h1>Search results for: "{{ search_term }}"</h1>
-
-    {% if books %}
-    <ul>
-        {% for book in books %}
-            <li>
-                <a href="{{ url_for('book_details', book_id=book.id) }}">
-                    <strong>{{ book.title }}</strong> by {{ book.author }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No books found matching your search, nya~</p>
-    {% endif %}
+        {% if books %}
+            <ul class="mt-6 space-y-4 text-lg text-gray-800 dark:text-white">
+                {% for book in books %}
+                    <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg hover:shadow-md transition">
+                        <a href="{{ url_for('book_details', book_id=book.id) }}" class="hover:underline">
+                            <strong>{{ book.title }}</strong> by {{ book.author }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-gray-600 dark:text-gray-300 text-lg">
+                No books found matching your search, nya~ 🐾
+            </p>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
