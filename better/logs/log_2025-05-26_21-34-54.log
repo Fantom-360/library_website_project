@@ -1,0 +1,22 @@
+2025-05-26 21:34:54,088 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-05-26 21:34:54,088 - INFO - [33mPress CTRL+C to quit[0m
+2025-05-26 21:34:54,090 - INFO -  * Restarting with stat
+2025-05-26 21:34:54,439 - WARNING -  * Debugger is active!
+2025-05-26 21:34:54,444 - INFO -  * Debugger PIN: 131-102-148
+2025-05-26 21:34:59,692 - INFO - 127.0.0.1 - - [26/May/2025 21:34:59] "GET / HTTP/1.1" 200 -
+2025-05-26 21:35:02,531 - INFO - 127.0.0.1 - - [26/May/2025 21:35:02] "[35m[1mGET /admin HTTP/1.1[0m" 500 -
+2025-05-26 21:35:02,637 - INFO - 127.0.0.1 - - [26/May/2025 21:35:02] "GET /admin?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-05-26 21:35:02,639 - INFO - 127.0.0.1 - - [26/May/2025 21:35:02] "GET /admin?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-05-26 21:35:02,673 - INFO - 127.0.0.1 - - [26/May/2025 21:35:02] "GET /admin?__debugger__=yes&cmd=resource&f=console.png&s=gYCLSmgiQ2tKBh1eMV4g HTTP/1.1" 200 -
+2025-05-26 21:35:02,686 - INFO - 127.0.0.1 - - [26/May/2025 21:35:02] "GET /admin?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-05-26 21:35:36,495 - INFO - 127.0.0.1 - - [26/May/2025 21:35:36] "GET /admin HTTP/1.1" 200 -
+2025-05-26 21:35:41,471 - INFO - 127.0.0.1 - - [26/May/2025 21:35:41] "GET /admin?mode=borrowed HTTP/1.1" 200 -
+2025-05-26 21:35:43,282 - INFO - 127.0.0.1 - - [26/May/2025 21:35:43] "GET /admin?mode=users HTTP/1.1" 200 -
+2025-05-26 21:35:56,596 - INFO - 127.0.0.1 - - [26/May/2025 21:35:56] "GET /admin?mode=borrowed HTTP/1.1" 200 -
+2025-05-26 21:35:59,192 - INFO - 127.0.0.1 - - [26/May/2025 21:35:59] "GET /admin?mode=users HTTP/1.1" 200 -
+2025-05-26 21:37:42,093 - INFO - 127.0.0.1 - - [26/May/2025 21:37:42] "GET /admin?mode=borrowed HTTP/1.1" 200 -
+2025-05-26 21:37:52,142 - INFO - 127.0.0.1 - - [26/May/2025 21:37:52] "GET /admin?mode=users HTTP/1.1" 200 -
+2025-05-26 21:38:32,300 - INFO - 127.0.0.1 - - [26/May/2025 21:38:32] "GET /admin?mode=users HTTP/1.1" 200 -
+2025-05-26 21:38:34,963 - INFO - 127.0.0.1 - - [26/May/2025 21:38:34] "GET /admin?mode=borrowed HTTP/1.1" 200 -
+2025-05-26 21:38:36,296 - INFO - 127.0.0.1 - - [26/May/2025 21:38:36] "GET /admin?mode=users HTTP/1.1" 200 -
