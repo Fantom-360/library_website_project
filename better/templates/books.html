@@ -3,24 +3,42 @@
 {% block title %}Books{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<div class="max-w-5xl mx-auto py-12 px-6">
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8 space-y-10 transition duration-300">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Books</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Search Bar -->
+        <form action="{{ url_for('search') }}" method="GET" class="flex flex-col sm:flex-row gap-4 justify-center">
+            <input 
+                type="text" 
+                name="query" 
+                placeholder="Search by title or author..." 
+                required 
+                class="w-full sm:w-96 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+            <button 
+                type="submit" 
+                class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
+            >
+                Search
+            </button>
+        </form>
 
+        <!-- Heading -->
+        <h1 class="text-3xl font-bold text-center text-gray-800 dark:text-white">📚 All Books</h1>
 
-    <form action="{{ url_for('search') }}" method="GET">
-        <input type="text" name="query" placeholder="Search by title or author..." required>
-        <button type="submit">Search</button>
-    </form>
-
-    <h1>All Books</h1>
-    <ul>
-        {% for book in books %}
-            <li><a href="{{ url_for('book_details', book_id=book.id) }}">{{ book.title }}</a></li>
-        {% endfor %}
-    </ul>
+        <!-- Book List -->
+        <ul class="space-y-4">
+            {% for book in books %}
+                <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-sm hover:shadow-md transition">
+                    <a 
+                        href="{{ url_for('book_details', book_id=book.id) }}" 
+                        class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 hover:underline"
+                    >
+                        {{ book.title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 {% endblock %}
