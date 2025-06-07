@@ -1,0 +1,47 @@
+version: '3.8'
+# Let's run web on 4118 and db admin on 4119 bc why not
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: meowmeowpasswd
+      MYSQL_DATABASE: uwu-library
+      MYSQL_USER: lib_user
+      MYSQL_PASSWORD: catgoesmeowanddoggoesbark
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "4119:80"
+
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: meowmeowpasswd
+
+    depends_on:
+      - mysql
+
+  flask:
+    build: 
+      context: ..
+      dockerfile: ./deployment/Dockerfile
+
+    environment:
+      DB_USER: lib_user
+      DB_PASSWORD: catgoesmeowanddoggoesbark
+      DB_HOST: mysql
+
+
+    ports:
+      - "4118:8000"
+
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <h1>Admin Dashboard</h1>
+    <ul>
+        <li>Total Users: {{ total_users }}</li>
+        <li>Total Books: {{ total_books }}</li>
+        <li>Currently Borrowed Books: {{ borrowed_books }}</li>
+        <li>Users Online (past 5 mins): {{ online_users }}</li>
+    </ul>
+    <!-- buttons to switch the graph -->
+    <div class="flex gap-4 mb-4">
+        <a href="{{ url_for('admin_dashboard', mode='borrowed') }}">
+            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
+                Borrowed Books (24h)
+            </button>
+        </a>
+        <a href="{{ url_for('admin_dashboard', mode='users') }}">
+            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded">
+                Active Users (24h)
+            </button>
+        </a>
+    </div>
+
+    <!-- the main graphing section -->
+
+    {% if graphJSON %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <div id="plotly-graph" style="min-height: 400px;" class="rounded-xl border bg-gray-900 shadow p-4 mb-6">
+        Loading graph...
+    </div>
+    <script>
+        const graphData = JSON.parse('{{ graphJSON | tojson | safe }}');
+        Plotly.newPlot('plotly-graph', graphData.data, graphData.layout);
+    </script>
+    {% else %}
+        <div class="text-red-500 mt-4 text-lg">
+            {% if current_mode == 'users' %}
+                No user activity recorded in the last 24 hours D:
+            {% else %}
+                No books were borrowed in the last 24 hours D:
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('add_book') }}">Add_book</a>
+{% endblock %}

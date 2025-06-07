@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    <h1>Your Borrow History</h1>
+
+    {% if history %}
+        <ul>
+            {% for entry in history %}
+                <li>
+                    <strong>{{ entry.title }}</strong><br>
+                    Borrowed: {{ entry.borrow_date }}<br>
+                    {% if entry.return_date %}
+                        Returned: {{ entry.return_date }}
+                    {% else %}
+                        <em>Not returned yet</em>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No borrow history found~ nya~</p>
+    {% endif %}
+{% endblock %}

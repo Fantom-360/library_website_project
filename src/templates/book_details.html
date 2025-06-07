@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Book Details{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+
+    {% if book.cover_image %}
+        <img src="{{ url_for('static', filename='images/' + book.cover_image) }}" alt="Cover Image" width="200">
+    {% endif %}
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Description:</strong> {{ book.description }}</p>
+    <p><strong>Year:</strong> {{ book.published_year }}</p>
+    
+    {% if session.get('admin_id') %}
+    <form action="{{ url_for('remove_book', book_id=book.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this book?');">
+        <button type="submit" style="color: red;">Remove Book</button>
+    </form>
+
+    <form action="{{ url_for('update_book', book_id=book.id) }}" method="GET">
+        <button type="submit">Update Book</button>
+    </form>
+    {% endif %}
+
+    {% if session.get('user_id') %}
+    <form action="{{ url_for('borrow_book', book_id=book.id) }}" method="POST">
+        <button type="submit">Borrow this book</button>
+    </form>
+
+    
+    {% else %}
+    <p><a href="{{ url_for('login') }}">Log in</a> to borrow this book.</p>
+    {% endif %}
+{% endblock %}
