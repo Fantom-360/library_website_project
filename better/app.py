@@ -1,11 +1,11 @@
 from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, send_file
-import sqlite3
 import hashlib
 import logging
 import os
-import matplotlib.pyplot as plt
-import io
-
+import plotly.graph_objs as go
+import plotly
+import json
+import mysql.connector
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 
@@ -20,9 +20,15 @@ logging.basicConfig(
 )
 
 def get_db():
-    db = sqlite3.connect("better/library.db", check_same_thread=False)
-    db.row_factory = sqlite3.Row
-    return db
+    db = mysql.connector.connect(
+        user=f'{os.environ["DB_USER"]}',
+        password = f'{os.environ['DB_PASSWORD']}',
+        host = f'{os.environ['DB_HOST']}',
+        datadase = 'uwu-library'
+    )
+    # db = sqlite3.connect("better/library.db", check_same_thread=False)
+    # db.row_factory = sqlite3.Row
+    # return db
 
 app = Flask(__name__)
 password_hash = hashlib.sha256()
@@ -202,25 +208,6 @@ def borrow_book(book_id):
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
-#@app.route('/books/return/<int:book_id>', methods=['POST'])
-#def return_book(book_id):
-#    if 'user_id' not in session:
-#        logging.warning("Unauthorized access to /user")
-#        return redirect(url_for('login'))
-#    
-#    user_id = session['user_id']
-#
-#    query = """
-#        UPDATE borrowed_books
-#        SET returned_at = ?
-#        WHERE user_id = ? AND book_id = ? AND returned_at IS NULL
-#    """
-#    now = datetime.now()
-#    cursor.execute(query, (now, user_id, book_id))
-#    db.commit()
-#    logging.info(f"User {user_id} returned book {book_id}")
-#    return redirect(url_for('borrow_history'))
-    
 @app.route('/search')
 def search():
     query = request.args.get('query')
@@ -271,6 +258,9 @@ def admin_dashboard():
     if 'admin_id' not in session:
         logging.warning("Unauthorized access to /admin")
         return redirect(url_for('admin_login'))
+    
+    mode = request.args.get('mode', 'borrowed')
+    graphJSON = generate_admin_graph(mode)
         
     cursor.execute("SELECT COUNT(*) AS total_users FROM users")
     total_users = cursor.fetchone()['total_users']
@@ -293,49 +283,9 @@ def admin_dashboard():
                            total_books=total_books,
                            online_users=online_users,
                            borrow_stats=borrow_stats,
-                           now=datetime.now)
+                           graphJSON=graphJSON,
+                           current_mode=mode)
 
-@app.route('/admin/graph.png')
-def admin_graph():
-    now = datetime.now().isoformat()
-    user_counts = []
-    borrow_counts = []
-    labels = []
-
-    for i in range(12, 0, -1):  # 12 intervals of 10 minutes
-        start_time = now - timedelta(minutes=i * 10)
-        end_time = now - timedelta(minutes=(i - 1) * 10)
-
-        labels.append(start_time.strftime('%H:%M'))
-
-        cursor.execute("""
-            SELECT COUNT(*) as count FROM users
-            WHERE datetime(created_at) BETWEEN ? AND ?
-        """, (start_time, end_time))
-        user_counts.append(cursor.fetchone()['count'])
-
-        cursor.execute("""
-            SELECT COUNT(*) as count FROM borrowed_books
-            WHERE datetime(borrowed_at) BETWEEN ? AND ?
-        """, (start_time, end_time))
-        borrow_counts.append(cursor.fetchone()['count'])
-
-    # Plot only after collecting all data
-    fig, ax = plt.subplots()
-    ax.plot(labels, user_counts, label='Users Registered', marker='o')
-    ax.plot(labels, borrow_counts, label='Books Borrowed', marker='s')
-    ax.set_title("Library Stats (Last 2 Hours)")
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Count")
-    ax.legend()
-    ax.grid(True)
-
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plt.close(fig)
-    return send_file(buf, mimetype='image/png')
-    
 @app.route('/admin/books/add', methods=['GET', 'POST'])
 def add_book():
     error_message = None
@@ -462,18 +412,65 @@ def about_us():
 def faq():
     return render_template('faq.html')
 
+#---Before---#
+
 @app.before_request
 def update_last_seen():
-    # Skip updating last_seen for static files
-    if request.path.startswith('/static'):
-        return
-    now = datetime.now().isoformat()
-    if 'user_id' in session or 'admin_id' in session:
-        user_id = session.get('user_id') or session.get('admin_id')
-        cursor = db.cursor()
-        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, user_id))
+    now = datetime.now()
+    if 'user_id' in session:
+        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['user_id']))
         db.commit()
-        cursor.close()
+    elif 'admin_id' in session:
+        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['admin_id']))
+        db.commit()
+
+#---Functions---#
+
+def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
+    now = datetime.now()
+    num_chunks = (hours * 60) // chunk_minutes
+    labels = []
+    data_points = []
+
+    for i in range(num_chunks, 0, -1):
+        start_time = now - timedelta(minutes=i * chunk_minutes)
+        end_time = now - timedelta(minutes=(i - 1) * chunk_minutes)
+        label = start_time.strftime('%H:%M')
+        labels.append(label)
+
+        if mode == 'users':
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM users
+                WHERE datetime(last_seen) BETWEEN ? AND ?
+            """, (start_time.isoformat(), end_time.isoformat()))
+        else:
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM borrowed_books
+                WHERE datetime(borrowed_at) BETWEEN ? AND ?
+            """, (start_time.isoformat(), end_time.isoformat()))
+
+        data_points.append(cursor.fetchone()['count'])
+
+        if not any(dp and dp > 0 for dp in data_points):
+            return None
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=labels,
+        y=data_points,
+        mode='lines+markers',
+        name="Active Users" if mode == 'users' else "Borrows"
+    ))
+    fig.update_layout(
+        title="Active Users (Last 24 Hours)" if mode == 'users'
+              else "Books Borrowed (Last 24 Hours)",
+        xaxis_title='Time',
+        yaxis_title='Users' if mode == 'users' else 'Borrows',
+        template='plotly_dark',
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 if __name__ == "__main__":
     app.run(debug=True)
