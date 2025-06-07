@@ -1,3 +1,5 @@
 writer.py
 init_db.py
 test.py
+venv/
+init_script.sql
