@@ -26,9 +26,6 @@ def get_db():
         host = f'{os.environ['DB_HOST']}',
         datadase = 'uwu-library'
     )
-    # db = sqlite3.connect("better/library.db", check_same_thread=False)
-    # db.row_factory = sqlite3.Row
-    # return db
 
 app = Flask(__name__)
 password_hash = hashlib.sha256()
