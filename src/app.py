@@ -26,6 +26,7 @@ def get_db():
         host = f'{os.environ['DB_HOST']}',
         datadase = 'uwu-library'
     )
+    return db
 
 app = Flask(__name__)
 password_hash = hashlib.sha256()
@@ -45,7 +46,7 @@ def login():
         identifier = request.form.get('identifier')
         password = request.form.get('password')
 
-        query = "SELECT * FROM users WHERE email = ? OR username = ?"
+        query = "SELECT * FROM users WHERE email = %s OR username = %s"
         cursor.execute(query, (identifier, identifier))
         user = cursor.fetchone()
 
@@ -80,7 +81,7 @@ def register():
         now = datetime.now().isoformat()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-        query = "INSERT INTO users (username, email, password, created_at) VALUES (?, ?, ?, ?)"
+        query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, )"
         value = (username, email, password_hash, now)
         try:
             cursor.execute(query, value)
@@ -121,9 +122,9 @@ def delete_account():
     user_email = session.get('email', 'unknown')
 
     # Optional: Delete borrowed_books, favorites, etc. too
-    cursor.execute("DELETE FROM borrowed_books WHERE user_id = ?", (user_id,))
-    cursor.execute("DELETE FROM favorites WHERE user_id = ?", (user_id,))
-    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    cursor.execute("DELETE FROM borrowed_books WHERE user_id = %d", (user_id,))
+    cursor.execute("DELETE FROM favorites WHERE user_id = %d", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = %d", (user_id,))
     db.commit()
 
     logging.info(f"User {user_email} deleted their account.")
@@ -141,7 +142,7 @@ def favorite():
         SELECT b.id, b.title
         FROM favorites f
         JOIN books b ON f.book_id = b.id
-        WHERE f.user_id = ?
+        WHERE f.user_id = %d
     """
 
     cursor.execute(query, (user_id,))
@@ -160,8 +161,8 @@ def borrow_history():
         SELECT b.title, bb.borrowed_at, bb.returned_at
         FROM borrowed_books bb
         JOIN books b ON bb.book_id = b.id
-        WHERE bb.user_id = ?
-    """
+        WHERE bb.user_id = %d
+        """
     cursor.execute(query, (user_id,))
     history = cursor.fetchall()
     return render_template("history.html", history=history)
