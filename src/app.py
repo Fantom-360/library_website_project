@@ -81,7 +81,7 @@ def register():
         now = datetime.now().isoformat()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-        query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, )"
+        query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, %d)"
         value = (username, email, password_hash, now)
         try:
             cursor.execute(query, value)
@@ -176,7 +176,7 @@ def books():
 
 @app.route('/books/<int:book_id>')
 def book_details(book_id):
-    query = "SELECT * FROM books WHERE id = ?"
+    query = "SELECT * FROM books WHERE id = %d"
     cursor.execute(query, (book_id,))
     book = cursor.fetchone()
 
@@ -195,14 +195,14 @@ def borrow_book(book_id):
    user_id = session['user_id']
 
 
-   cursor.execute("SELECT * FROM books WHERE id = ?")
+   cursor.execute("SELECT * FROM books WHERE id = %d")
    book = cursor.fetchone()
    if not book or not book['pdf_file']:
        logging.warning(f"book id: {book_id} PDF is missing")
        return "book not found or missing PDF"
  
    now = datetime.now().isoformat()
-   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (?, ?, ?)", (user_id, book_id, now))
+   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%d, %d, %d)", (user_id, book_id, now))
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
@@ -216,7 +216,7 @@ def search():
     like_pattern = f"%{query}%"
     sql = """
         SELECT * FROM books
-        WHERE title LIKE ? OR author LIKE ?
+        WHERE title LIKE %s OR author LIKE %s
     """
     cursor.execute(sql, (like_pattern, like_pattern))
     results = cursor.fetchall()
@@ -230,7 +230,7 @@ def admin_login():
         admin_password = request.form.get('password')
         admin_email = request.form.get('email')
 
-        query = "SELECT * FROM users WHERE email = ? AND is_admin = TRUE"
+        query = "SELECT * FROM users WHERE email = %s AND is_admin = TRUE"
         cursor.execute(query, (admin_email,))
         admin_user = cursor.fetchone()
 
@@ -312,8 +312,8 @@ def add_book():
             cover_image.save(os.path.join('static', 'images', filename))
 
         query = """
-            INSERT INTO books (title, author, description, published_year, genre, is_available, cover_image, pdf_file)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO books (title, author, description, published_year, genre, cover_image, pdf_file)
+            VALUES (%s, %s, %s, %d, %s, %s, %s)
         """
 
         values = (title, author, description, published_year, genre, True, filename, pdf_filename)
@@ -336,7 +336,7 @@ def update_book(book_id):
         logging.warning("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
-    cursor.execute("SELECT * FROM books WHERE id = ?", (book_id,))
+    cursor.execute("SELECT * FROM books WHERE id = %d", (book_id,))
     book = cursor.fetchone()
 
     if not book:
@@ -364,14 +364,14 @@ def update_book(book_id):
 
         update_query = """
             UPDATE books SET
-            title = ?,
-            author = ?,
-            description = ?,
-            published_year = ?,
-            genre = ?,
-            cover_image = ?,
-            pdf_file = ?
-            WHERE id = ?
+            title = %s,
+            author = %s,
+            description = %s,
+            published_year = %d,
+            genre = %s,
+            cover_image = %s,
+            pdf_file = %s
+            WHERE id = %d
         """
         values = (title, author, description, published_year, genre, filename, pdf_filename, book_id)
 
@@ -393,7 +393,7 @@ def remove_book(book_id):
         return redirect(url_for('admin_login'))
     
     try:
-        query = "DELETE FROM books WHERE id = ?"
+        query = "DELETE FROM books WHERE id = %d"
         cursor.execute(query, (book_id,))
         db.commit()
         logging.info(f"Book {book_id} removed by admin")
@@ -416,10 +416,10 @@ def faq():
 def update_last_seen():
     now = datetime.now()
     if 'user_id' in session:
-        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['user_id']))
+        cursor.execute("UPDATE users SET last_seen = %d WHERE id = %d", (now, session['user_id']))
         db.commit()
     elif 'admin_id' in session:
-        cursor.execute("UPDATE users SET last_seen = ? WHERE id = ?", (now, session['admin_id']))
+        cursor.execute("UPDATE users SET last_seen = %d WHERE id = %d", (now, session['admin_id']))
         db.commit()
 
 #---Functions---#
@@ -439,12 +439,12 @@ def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
         if mode == 'users':
             cursor.execute("""
                 SELECT COUNT(*) as count FROM users
-                WHERE datetime(last_seen) BETWEEN ? AND ?
+                WHERE datetime(last_seen) BETWEEN %d AND %d
             """, (start_time.isoformat(), end_time.isoformat()))
         else:
             cursor.execute("""
                 SELECT COUNT(*) as count FROM borrowed_books
-                WHERE datetime(borrowed_at) BETWEEN ? AND ?
+                WHERE datetime(borrowed_at) BETWEEN %d AND %d
             """, (start_time.isoformat(), end_time.isoformat()))
 
         data_points.append(cursor.fetchone()['count'])
