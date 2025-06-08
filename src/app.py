@@ -136,7 +136,7 @@ def favorite():
     user_id = session['user_id']
     query = """
         SELECT b.id, b.title
-        FROM favorites f
+        FROM favourites f
         JOIN books b ON f.book_id = b.id
         WHERE f.user_id = %s
     """
