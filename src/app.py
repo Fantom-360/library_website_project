@@ -10,9 +10,9 @@ from werkzeug.utils import secure_filename
 
 def get_db():
     db = mysql.connector.connect(
-        user=f'{os.environ["DB_USER"]}',
-        password = f'{os.environ['DB_PASSWORD']}',
-        host = f'{os.environ['DB_HOST']}',
+        user=f'{os.getenv('DB_USER')}',
+        password = f'{os.getenv('DB_PASSWORD')}',
+        host = f'{os.getenv('DB_HOST')}',
         database = 'uwu-library'
     )
     return db
