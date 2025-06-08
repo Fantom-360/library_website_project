@@ -21,11 +21,12 @@ CREATE TABLE books (
 
 CREATE TABLE review (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    book_id INT,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
     review_text TEXT NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(book_id) REFERENCES books(id)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (book_id) REFERENCES books(id)
 );
 
 CREATE TABLE borrowed_books (

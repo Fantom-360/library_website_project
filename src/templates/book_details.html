@@ -11,7 +11,6 @@
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
 
-    {% if not error_message %}
         {% if book.cover_image %}
             <img src="{{ url_for('static', filename='images/' + book.cover_image) }}" alt="Cover Image" width="200">
         {% endif %}
@@ -57,7 +56,4 @@
             {% else %}
             <p>No reviews yet. Be the first to review this book nya~!</p>
             {% endif %}
-        {% else %}
-            <p>{{ error_message }}</p>
-        {% endif %}
 {% endblock %}
