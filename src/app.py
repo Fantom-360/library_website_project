@@ -7,15 +7,22 @@ import json
 import mysql.connector
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+import time
 
 def get_db():
-    db = mysql.connector.connect(
-        user=f'{os.getenv('DB_USER')}',
-        password = f'{os.getenv('DB_PASSWORD')}',
-        host = f'{os.getenv('DB_HOST')}',
-        database = 'uwu-library'
-    )
-    return db
+    while True:
+        try:
+            db = mysql.connector.connect(
+                user=f'{os.getenv('DB_USER')}',
+                password = f'{os.getenv('DB_PASSWORD')}',
+                host = f'{os.getenv('DB_HOST')}',
+                database = 'uwu-library'
+            )
+            return db
+        except:
+            print("failed connecting to DB")
+            time.sleep(1)
+    
 
 app = Flask(__name__)
 password_hash = hashlib.sha256()
