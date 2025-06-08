@@ -77,7 +77,7 @@ def register():
         now = datetime.now().isoformat()
         password_hash = hashlib.sha256(password.encode()).hexdigest()
 
-        query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, %d)"
+        query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, %s)"
         value = (username, email, password_hash, now)
         try:
             cursor.execute(query, value)
@@ -118,9 +118,9 @@ def delete_account():
     user_email = session.get('email', 'unknown')
 
     # Optional: Delete borrowed_books, favorites, etc. too
-    cursor.execute("DELETE FROM borrowed_books WHERE user_id = %d", (user_id,))
-    cursor.execute("DELETE FROM favorites WHERE user_id = %d", (user_id,))
-    cursor.execute("DELETE FROM users WHERE id = %d", (user_id,))
+    cursor.execute("DELETE FROM borrowed_books WHERE user_id = %s", (user_id,))
+    cursor.execute("DELETE FROM favorites WHERE user_id = %s", (user_id,))
+    cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
     db.commit()
 
     print(f"User {user_email} deleted their account.")
@@ -138,7 +138,7 @@ def favorite():
         SELECT b.id, b.title
         FROM favorites f
         JOIN books b ON f.book_id = b.id
-        WHERE f.user_id = %d
+        WHERE f.user_id = %s
     """
 
     cursor.execute(query, (user_id,))
@@ -157,7 +157,7 @@ def borrow_history():
         SELECT b.title, bb.borrowed_at, bb.returned_at
         FROM borrowed_books bb
         JOIN books b ON bb.book_id = b.id
-        WHERE bb.user_id = %d
+        WHERE bb.user_id = %s
         """
     cursor.execute(query, (user_id,))
     history = cursor.fetchall()
@@ -172,15 +172,32 @@ def books():
 
 @app.route('/books/<int:book_id>')
 def book_details(book_id):
-    query = "SELECT * FROM books WHERE id = %d"
-    cursor.execute(query, (book_id,))
+    if request.method == 'POST' and 'user_id' in session:
+        review_text = request.form.get('review')
+        user_id = session['user_id']
+        query = "INSERT INTO review (user_id, book_id, review_text) VALUES (%s, %s, %s)"
+        cursor.execute(query, (user_id, book_id, review_text))
+        db.commit()
+    
+    # Get book details
+    cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
     book = cursor.fetchone()
 
     if not book:
         print(f"Book: {book} was not founf")
         return "Book not found", 404
     
-    return render_template("book_details.html", book=book)
+    # Fetch reviews for this book
+    cursor.execute("""
+        SELECT r.review_text, r.created_at, u.username
+        FROM review r
+        JOIN users u ON r.user_id = u.id
+        WHERE r.book_id = %s
+        ORDER BY r.created_at DESC
+    """, (book_id,))
+    reviews = cursor.fetchall()
+
+    return render_template("book_details.html", book=book, reviews=reviews)
 
 @app.route('/books/borrow/<int:book_id>', methods=['POST'])
 def borrow_book(book_id):
@@ -191,14 +208,14 @@ def borrow_book(book_id):
    user_id = session['user_id']
 
 
-   cursor.execute("SELECT * FROM books WHERE id = %d")
+   cursor.execute("SELECT * FROM books WHERE id = %s")
    book = cursor.fetchone()
    if not book or not book['pdf_file']:
        print(f"book id: {book_id} PDF is missing")
        return "book not found or missing PDF"
  
    now = datetime.now().isoformat()
-   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%d, %d, %d)", (user_id, book_id, now))
+   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
    db.commit()
    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
@@ -309,7 +326,7 @@ def add_book():
 
         query = """
             INSERT INTO books (title, author, description, published_year, genre, cover_image, pdf_file)
-            VALUES (%s, %s, %s, %d, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
         values = (title, author, description, published_year, genre, True, filename, pdf_filename)
@@ -332,7 +349,7 @@ def update_book(book_id):
         print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
-    cursor.execute("SELECT * FROM books WHERE id = %d", (book_id,))
+    cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
     book = cursor.fetchone()
 
     if not book:
@@ -363,11 +380,11 @@ def update_book(book_id):
             title = %s,
             author = %s,
             description = %s,
-            published_year = %d,
+            published_year = %s,
             genre = %s,
             cover_image = %s,
             pdf_file = %s
-            WHERE id = %d
+            WHERE id = %s
         """
         values = (title, author, description, published_year, genre, filename, pdf_filename, book_id)
 
@@ -389,7 +406,7 @@ def remove_book(book_id):
         return redirect(url_for('admin_login'))
     
     try:
-        query = "DELETE FROM books WHERE id = %d"
+        query = "DELETE FROM books WHERE id = %s"
         cursor.execute(query, (book_id,))
         db.commit()
         print(f"Book {book_id} removed by admin")
@@ -412,10 +429,10 @@ def faq():
 def update_last_seen():
     now = datetime.now()
     if 'user_id' in session:
-        cursor.execute("UPDATE users SET last_seen = %d WHERE id = %d", (now, session['user_id']))
+        cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, session['user_id']))
         db.commit()
     elif 'admin_id' in session:
-        cursor.execute("UPDATE users SET last_seen = %d WHERE id = %d", (now, session['admin_id']))
+        cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, session['admin_id']))
         db.commit()
 
 #---Functions---#
@@ -435,12 +452,12 @@ def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
         if mode == 'users':
             cursor.execute("""
                 SELECT COUNT(*) as count FROM users
-                WHERE datetime(last_seen) BETWEEN %d AND %d
+                WHERE datetime(last_seen) BETWEEN %s AND %s
             """, (start_time.isoformat(), end_time.isoformat()))
         else:
             cursor.execute("""
                 SELECT COUNT(*) as count FROM borrowed_books
-                WHERE datetime(borrowed_at) BETWEEN %d AND %d
+                WHERE datetime(borrowed_at) BETWEEN %s AND %s
             """, (start_time.isoformat(), end_time.isoformat()))
 
         data_points.append(cursor.fetchone()['count'])
@@ -467,12 +484,4 @@ def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 if __name__ == "__main__":
-<<<<<<< HEAD
     app.run(debug=False, port=8000, host="0.0.0.0")
-=======
-    app.run(
-        #debug=True
-        port=8000
-        host= 0.0.0.0
-        )
->>>>>>> 60b1a93e (smsm)
