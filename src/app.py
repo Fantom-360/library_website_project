@@ -431,13 +431,14 @@ def faq():
 
 @app.before_request
 def update_last_seen():
-    now = datetime.now()
     if 'user_id' in session:
-        cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, session['user_id']))
-        db.commit()
-    elif 'admin_id' in session:
-        cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, session['admin_id']))
-        db.commit()
+        user_id = session.get('user_id')
+        now = datetime.now()
+        try:
+            cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, user_id))
+            db.commit()
+        except Exception as e:
+            print(f"Failed to update last_seen: {e}")
 
 #---Functions---#
 
