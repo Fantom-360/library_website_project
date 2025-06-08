@@ -23,9 +23,7 @@ CREATE TABLE review (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     book_id INT,
-    review_text TEXT,
-    likes INT DEFAULT 0,
-    dislikes INT DEFAULT 0,
+    review_text TEXT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(book_id) REFERENCES books(id)
 );
