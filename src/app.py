@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 os.makedirs('better/logs', exist_ok=True)
 log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M-%S.log")
-log_path = os.path.join('better/logs', log_filename)
+log_path = os.path.join('src/logs', log_filename)
 
 logging.basicConfig(
     filename=log_path,
