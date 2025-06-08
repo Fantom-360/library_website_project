@@ -29,7 +29,7 @@ password_hash = hashlib.sha256()
 app.secret_key = 'something123'
 
 db = get_db()
-cursor = db.cursor()
+cursor = db.cursor(dictionary=True)
 
 @app.route('/')
 def home():
