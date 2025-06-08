@@ -164,6 +164,7 @@ def borrow_history():
         history = cursor.fetchall()
     except:
         print("database problem")
+        return render_template("history.html")
     return render_template("history.html", history=history)
 
 @app.route('/books')
