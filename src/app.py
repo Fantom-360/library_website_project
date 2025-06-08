@@ -1,6 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, send_file
 import hashlib
-import logging
 import os
 import plotly.graph_objs as go
 import plotly
@@ -8,6 +7,7 @@ import json
 import mysql.connector
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+<<<<<<< HEAD
 
 os.makedirs('better/logs', exist_ok=True)
 log_filename = datetime.now().strftime("log_%Y-%m-%d_%H-%M-%S.log")
@@ -18,15 +18,24 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+=======
+import time
+>>>>>>> main
 
 def get_db():
-    db = mysql.connector.connect(
-        user=f'{os.environ["DB_USER"]}',
-        password = f'{os.environ['DB_PASSWORD']}',
-        host = f'{os.environ['DB_HOST']}',
-        datadase = 'uwu-library'
-    )
-    return db
+    while True:
+        try:
+            db = mysql.connector.connect(
+                user=f'{os.getenv('DB_USER')}',
+                password = f'{os.getenv('DB_PASSWORD')}',
+                host = f'{os.getenv('DB_HOST')}',
+                database = 'uwu-library'
+            )
+            return db
+        except:
+            print("failed connecting to DB")
+            time.sleep(1)
+    
 
 app = Flask(__name__)
 password_hash = hashlib.sha256()
@@ -56,13 +65,13 @@ def login():
                 session['user_id'] = user['id']
                 session['username'] = user['username']
                 session['email'] = user['email']
-                logging.info(f"User {user['username']} ({user['email']}) logged in successfully")
+                print(f"User {user['username']} ({user['email']}) logged in successfully")
                 return redirect(url_for('user'))
             else:
-                logging.warning(f"Incorect password for user {identifier}")
+                print(f"Incorect password for user {identifier}")
                 error_message = "Your password is incorect try again"
         else:
-            logging.warning(f"Login attempt for non-existent email: {identifier}")
+            print(f"Login attempt for non-existent email: {identifier}")
             error_message = "No user with that email or username"
         
     return render_template("login.html", error_message=error_message)
@@ -87,25 +96,25 @@ def register():
             cursor.execute(query, value)
             db.commit()
             print("the register was succesfull")
-            logging.info(f"User {username} with email: {email} Registered")
+            print(f"User {username} with email: {email} Registered")
             return redirect(url_for('login'))
         except Exception as e:
             print("something went wrong when updating the database")
-            logging.error(f"Error ocured with writing to database: {e}")
+            print(f"Error ocured with writing to database: {e}")
 
     return render_template('register.html')
 
 @app.route('/logout')
 def logout():
     user_email = session.get('email', 'Unknown')
-    logging.info(f"User {user_email} logged out")
+    print(f"User {user_email} logged out")
     session.clear()
     return redirect(url_for('home'))
 
 @app.route('/user')
 def user():
     if 'user_id' not in session:
-        logging.warning("Unauthorized access to /user")
+        print("Unauthorized access to /user")
         return redirect(url_for('login'))
     
     username = session.get('username')
@@ -115,7 +124,7 @@ def user():
 @app.route('/user/delete', methods=['POST'])
 def delete_account():
     if 'user_id' not in session:
-        logging.warning("Unauthorized attempt to delete account")
+        print("Unauthorized attempt to delete account")
         return redirect(url_for('login'))
 
     user_id = session['user_id']
@@ -127,14 +136,14 @@ def delete_account():
     cursor.execute("DELETE FROM users WHERE id = %d", (user_id,))
     db.commit()
 
-    logging.info(f"User {user_email} deleted their account.")
+    print(f"User {user_email} deleted their account.")
     session.clear()
     return redirect(url_for('home'))
 
 @app.route('/user/favorite')
 def favorite():
     if 'user_id' not in session:
-        logging.warning("Unauthorized access to /user")
+        print("Unauthorized access to /user")
         return redirect(url_for('login'))
     
     user_id = session['user_id']
@@ -153,7 +162,7 @@ def favorite():
 @app.route('/user/history')
 def borrow_history():
     if 'user_id' not in session:
-        logging.warning("Unauthorized access to /user")
+        print("Unauthorized access to /user")
         return redirect(url_for('login'))
     
     user_id = session['user_id']
@@ -181,7 +190,7 @@ def book_details(book_id):
     book = cursor.fetchone()
 
     if not book:
-        logging.warning(f"Book: {book} was not founf")
+        print(f"Book: {book} was not founf")
         return "Book not found", 404
     
     return render_template("book_details.html", book=book)
@@ -189,7 +198,7 @@ def book_details(book_id):
 @app.route('/books/borrow/<int:book_id>', methods=['POST'])
 def borrow_book(book_id):
    if 'user_id' not in session:
-        logging.warning("Unauthorized access to /user")
+        print("Unauthorized access to /user")
         return redirect(url_for('login'))
    
    user_id = session['user_id']
@@ -198,7 +207,7 @@ def borrow_book(book_id):
    cursor.execute("SELECT * FROM books WHERE id = %d")
    book = cursor.fetchone()
    if not book or not book['pdf_file']:
-       logging.warning(f"book id: {book_id} PDF is missing")
+       print(f"book id: {book_id} PDF is missing")
        return "book not found or missing PDF"
  
    now = datetime.now().isoformat()
@@ -240,13 +249,13 @@ def admin_login():
             if hashed_input == admin_user['password']:
                 session['admin_id'] = admin_user['id']
                 session['admin_email'] = admin_user['email']
-                logging.info(f"Admin {admin_user['email']} logged in successfully")
+                print(f"Admin {admin_user['email']} logged in successfully")
                 return redirect(url_for('admin_dashboard'))
             else:
-                logging.warning(f"Wrong admin password for {admin_email}")
+                print(f"Wrong admin password for {admin_email}")
                 error_message = "Incorrect password"
         else:
-            logging.warning(f"Admin login failed: {admin_email} not found or not an admin")
+            print(f"Admin login failed: {admin_email} not found or not an admin")
             error_message = "NO admin account with that email"
 
     return render_template("admin_login.html", error_message=error_message)
@@ -254,7 +263,7 @@ def admin_login():
 @app.route('/admin')
 def admin_dashboard():
     if 'admin_id' not in session:
-        logging.warning("Unauthorized access to /admin")
+        print("Unauthorized access to /admin")
         return redirect(url_for('admin_login'))
     
     mode = request.args.get('mode', 'borrowed')
@@ -289,7 +298,7 @@ def add_book():
     error_message = None
 
     if 'admin_id' not in session:
-        logging.warning("Unauthorized admin book add attempt")
+        print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
     if request.method == 'POST':
@@ -321,10 +330,10 @@ def add_book():
         try:
             cursor.execute(query, values)
             db.commit()
-            logging.info(f"Admin added book: {title}")
+            print(f"Admin added book: {title}")
             return redirect(url_for('books'))
         except Exception as e:
-            logging.error(f"Error adding book: {e}")
+            print(f"Error adding book: {e}")
             error_message = "Error adding book"
 
     return render_template("add_book.html", error_message=error_message)
@@ -333,7 +342,7 @@ def add_book():
 def update_book(book_id):
     book = None
     if 'admin_id' not in session:
-        logging.warning("Unauthorized admin book add attempt")
+        print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
     cursor.execute("SELECT * FROM books WHERE id = %d", (book_id,))
@@ -378,10 +387,10 @@ def update_book(book_id):
         try:
             cursor.execute(update_query, values)
             db.commit()
-            logging.info(f"Book {book_id} updated by admin")
+            print(f"Book {book_id} updated by admin")
             return redirect(url_for('book_details', book_id=book_id))
         except Exception as e:
-            logging.error(f"Error updating book {book_id}: {e}")
+            print(f"Error updating book {book_id}: {e}")
             return render_template("update_book.html", book=book, error_message="Something went wrong")
         
     return render_template("update_book.html", book=book, error_message=error_message)
@@ -389,17 +398,17 @@ def update_book(book_id):
 @app.route('/admin/books/remove/<int:book_id>', methods=['GET', 'POST'])
 def remove_book(book_id):
     if 'admin_id' not in session:
-        logging.warning("Unauthorized admin book add attempt")
+        print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
     try:
         query = "DELETE FROM books WHERE id = %d"
         cursor.execute(query, (book_id,))
         db.commit()
-        logging.info(f"Book {book_id} removed by admin")
+        print(f"Book {book_id} removed by admin")
         return redirect(url_for('books'))
     except Exception as e:
-        logging.error(f"Error removing book {book_id}: {e}")
+        print(f"Error removing book {book_id}: {e}")
         return "something went wrong"
 
 @app.route('/about_us')
@@ -471,4 +480,12 @@ def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+<<<<<<< HEAD
+    app.run(debug=False, port=8000, host="0.0.0.0")
+=======
+    app.run(
+        #debug=True
+        port=8000
+        host= 0.0.0.0
+        )
+>>>>>>> 60b1a93e (smsm)
