@@ -467,4 +467,4 @@ def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 if __name__ == "__main__":
-    app.run(debug=False, port=8000, host=0.0.0.0)
+    app.run(debug=False, port=8000, host="0.0.0.0")
