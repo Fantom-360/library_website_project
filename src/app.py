@@ -159,8 +159,11 @@ def borrow_history():
         JOIN books b ON bb.book_id = b.id
         WHERE bb.user_id = %s
         """
-    cursor.execute(query, (user_id,))
-    history = cursor.fetchall()
+    try:
+        cursor.execute(query, (user_id))
+        history = cursor.fetchall()
+    except:
+        print("database problem")
     return render_template("history.html", history=history)
 
 @app.route('/books')
