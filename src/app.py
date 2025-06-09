@@ -335,8 +335,9 @@ def admin_dashboard():
                            total_users=total_users,
                            total_books=total_books,
                            online_users=online_users,
-                           borrow_stats=borrow_stats
-                           )
+                           borrow_stats=borrow_stats,
+                           graphJSON=graphJSON,
+                           current_mode=mode)
 
 @app.route('/admin/books/add', methods=['GET', 'POST'])
 def add_book():
@@ -476,6 +477,54 @@ def update_last_seen():
             db.commit()
         except Exception as e:
             print(f"Failed to update last_seen: {e}")
+
+#---Functions---#
+
+def generate_admin_graph(mode='borrowed', hours=24, chunk_minutes=60):
+    now = datetime.now()
+    num_chunks = (hours * 60) // chunk_minutes
+    labels = []
+    data_points = []
+
+    for i in range(num_chunks, 0, -1):
+        start_time = now - timedelta(minutes=i * chunk_minutes)
+        end_time = now - timedelta(minutes=(i - 1) * chunk_minutes)
+        label = start_time.strftime('%H:%M')
+        labels.append(label)
+
+        if mode == 'users':
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM users
+                WHERE datetime(last_seen) BETWEEN %s AND %s
+            """, (start_time.isoformat(), end_time.isoformat()))
+        else:
+            cursor.execute("""
+                SELECT COUNT(*) as count FROM borrowed_books
+                WHERE datetime(borrowed_at) BETWEEN %s AND %s
+            """, (start_time.isoformat(), end_time.isoformat()))
+
+        data_points.append(cursor.fetchone()['count'])
+
+        if not any(dp and dp > 0 for dp in data_points):
+            return None
+
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=labels,
+        y=data_points,
+        mode='lines+markers',
+        name="Active Users" if mode == 'users' else "Borrows"
+    ))
+    fig.update_layout(
+        title="Active Users (Last 24 Hours)" if mode == 'users'
+              else "Books Borrowed (Last 24 Hours)",
+        xaxis_title='Time',
+        yaxis_title='Users' if mode == 'users' else 'Borrows',
+        template='plotly_dark',
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 if __name__ == "__main__":
     app.run(debug=False, port=8000, host="0.0.0.0")
