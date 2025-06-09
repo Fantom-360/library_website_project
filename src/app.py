@@ -23,7 +23,6 @@ def get_db():
             print("failed connecting to DB")
             time.sleep(1)
     
-
 app = Flask(__name__)
 password_hash = hashlib.sha256()
 app.secret_key = 'something123'
@@ -127,6 +126,46 @@ def delete_account():
     session.clear()
     return redirect(url_for('home'))
 
+# @app.route('/user/change_password', methods=['GET', 'POST'])
+# def change_password():
+#     error_message = None
+#     if 'user_id' not in session:
+#         print("Unauthorized attempt to delete account")
+#         return redirect(url_for('login'))
+    
+#     if request.method == 'POST':
+#         user_id = session['user_id']
+#         cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
+#         old_rem_password = cursor.fetchone()
+#         old_rem_password = old_rem_password['password']
+#         old_password  = request.form.get('old_password')
+#         hash_old_password = hashlib.sha256(old_password.encode()).hexdigest()
+#         new_password =  request.form.get('new_password')
+#         confirm_password = request.form.get('confirm_password')
+
+#         # if old_rem_password == old_password and new_password == confirm_password:
+#         if old_rem_password != hash_old_password:
+#             error_message = "Womp Womp your password is wrong"
+#             return render_template("change_password.html", error_message=error_message, postN_password=new_password, confirm_password=confirm_password)
+        
+#         if new_password != confirm_password:
+#             error_message = "HEY you dont have it the same"
+#             return render_template("change_password.html", error_message=error_message)
+
+#         new_password = hashlib.sha256(new_password.encode()).hexdigest()
+#         try:
+#             cursor.execute("UPDATE users SET password = %s WHERE user_id = %s", (new_password, user_id))
+#             db.commit()
+#             nice_message = "password succesfully changed"
+#         except Exception as e:
+#             print(f"an Error {e} ocured when connecting to database")
+#             error_message = "password not changed Error with database. Contact backend wizard"
+#             return render_template('change_password.html', error_message=error_message)
+
+#         return render_template('user.html',message_from=nice_message)
+    
+#     return render_template('change_password.html')
+
 @app.route('/user/favorite')
 def favorite():
     if 'user_id' not in session:
@@ -160,7 +199,7 @@ def borrow_history():
         WHERE bb.user_id = %s
         """
     try:
-        cursor.execute(query, (user_id))
+        cursor.execute(query, (user_id,))
         history = cursor.fetchall()
     except:
         print("database problem")

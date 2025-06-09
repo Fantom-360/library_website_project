@@ -3,6 +3,11 @@
 {% block title %}User Dashboard{% endblock %}
 
 {% block content %}
+
+{% if message_from %}
+    <p>{{ message_from }}</p>
+{% endif %}
+
 <div class="max-w-4xl mx-auto py-12 px-4">
     <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
