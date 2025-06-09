@@ -35,7 +35,7 @@
 
     <!-- the main graphing section -->
 
-    {% if graphJSON %}
+    <!-- {% if graphJSON %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <div id="plotly-graph" style="min-height: 400px;" class="rounded-xl border bg-gray-900 shadow p-4 mb-6">
         Loading graph...
@@ -52,7 +52,7 @@
                 No books were borrowed in the last 24 hours D:
             {% endif %}
         </div>
-    {% endif %}
+    {% endif %} -->
 
     <a href="{{ url_for('add_book') }}">Add_book</a>
 {% endblock %}
