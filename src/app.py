@@ -208,8 +208,7 @@ def borrow_history():
 
 @app.route('/books')
 def books():
-    query = "SELECT id, title FROM books"
-    cursor.execute(query)
+    cursor.execute("SELECT id, title FROM books")
     books = cursor.fetchall()
     return render_template("books.html", books=books)
 
