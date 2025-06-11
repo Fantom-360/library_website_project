@@ -20,19 +20,6 @@
         <li>Users Online (past 5 mins): {{ online_users }}</li>
     </ul>
     <!-- buttons to switch the graph -->
-    <div class="flex gap-4 mb-4">
-        <a href="{{ url_for('admin_dashboard', mode='borrowed') }}">
-            <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded">
-                Borrowed Books (24h)
-            </button>
-        </a>
-        <a href="{{ url_for('admin_dashboard', mode='users') }}">
-            <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded">
-                Active Users (24h)
-            </button>
-        </a>
-    </div>
-
     <!-- the main graphing section -->
 
     <!-- {% if graphJSON %}
