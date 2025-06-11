@@ -4,8 +4,8 @@
 
 {% block content %}
 
-{% if message_from %}
-    <p>{{ message_from }}</p>
+{% if error_message %}
+    <p>{{ error_message }}</p>
 {% endif %}
 
 <div class="max-w-4xl mx-auto py-12 px-4">
@@ -37,6 +37,11 @@
                 <a href="{{ url_for('logout') }}"
                    class="block text-red-600 hover:text-red-800 transition">
                     🚪 Logout
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('change_password') }}">
+                    change_password
                 </a>
             </li>
         </ul>

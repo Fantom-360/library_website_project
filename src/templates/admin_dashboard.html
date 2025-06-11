@@ -19,27 +19,7 @@
         <li>Currently Borrowed Books: {{ borrowed_books }}</li>
         <li>Users Online (past 5 mins): {{ online_users }}</li>
     </ul>
-    <!-- buttons to switch the graph -->
-    <!-- the main graphing section -->
-
-    <!-- {% if graphJSON %}
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <div id="plotly-graph" style="min-height: 400px;" class="rounded-xl border bg-gray-900 shadow p-4 mb-6">
-        Loading graph...
-    </div>
-    <script>
-        const graphData = JSON.parse('{{ graphJSON | tojson | safe }}');
-        Plotly.newPlot('plotly-graph', graphData.data, graphData.layout);
-    </script>
-    {% else %}
-        <div class="text-red-500 mt-4 text-lg">
-            {% if current_mode == 'users' %}
-                No user activity recorded in the last 24 hours D:
-            {% else %}
-                No books were borrowed in the last 24 hours D:
-            {% endif %}
-        </div>
-    {% endif %} -->
+    
 
     <a href="{{ url_for('add_book') }}">Add_book</a>
 {% endblock %}

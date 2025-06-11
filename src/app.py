@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, send_file
+from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, g
 import hashlib
 import os
 import plotly.graph_objs as go
@@ -10,25 +10,18 @@ from werkzeug.utils import secure_filename
 import time
 
 def get_db():
-    while True:
-        try:
-            db = mysql.connector.connect(
-                user=f'{os.getenv('DB_USER')}',
-                password = f'{os.getenv('DB_PASSWORD')}',
-                host = f'{os.getenv('DB_HOST')}',
-                database = 'uwu-library'
-            )
-            return db
-        except:
-            print("failed connecting to DB")
-            time.sleep(1)
+    if 'db' not in g:
+        g.db = mysql.connector.connect(
+            user=f'{os.getenv('DB_USER')}',
+            password = f'{os.getenv('DB_PASSWORD')}',
+            host = f'{os.getenv('DB_HOST')}',
+            database = 'uwu-library'
+        )
+        return g.db
     
 app = Flask(__name__)
 password_hash = hashlib.sha256()
 app.secret_key = 'something123'
-
-db = get_db()
-cursor = db.cursor(dictionary=True)
 
 @app.route('/')
 def home():
@@ -36,6 +29,13 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     error_message = None
     if request.method == 'POST':
         identifier = request.form.get('identifier')
@@ -64,6 +64,13 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if request.method  == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
@@ -109,6 +116,13 @@ def user():
 
 @app.route('/user/delete', methods=['POST'])
 def delete_account():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if 'user_id' not in session:
         print("Unauthorized attempt to delete account")
         return redirect(url_for('login'))
@@ -126,48 +140,62 @@ def delete_account():
     session.clear()
     return redirect(url_for('home'))
 
-# @app.route('/user/change_password', methods=['GET', 'POST'])
-# def change_password():
-#     error_message = None
-#     if 'user_id' not in session:
-#         print("Unauthorized attempt to delete account")
-#         return redirect(url_for('login'))
+@app.route('/user/change_password', methods=['GET', 'POST'])
+def change_password():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+    error_message = None
+    if 'user_id' not in session:
+        print("Unauthorized attempt to delete account")
+        return redirect(url_for('login'))
     
-#     if request.method == 'POST':
-#         user_id = session['user_id']
-#         cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
-#         old_rem_password = cursor.fetchone()
-#         old_rem_password = old_rem_password['password']
-#         old_password  = request.form.get('old_password')
-#         hash_old_password = hashlib.sha256(old_password.encode()).hexdigest()
-#         new_password =  request.form.get('new_password')
-#         confirm_password = request.form.get('confirm_password')
+    if request.method == 'POST':
+        user_id = session['user_id']
+        cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
+        old_rem_password = cursor.fetchone()
+        old_rem_password = old_rem_password['password']
+        current_password  = request.form.get('current_password')
+        hash_current_password = hashlib.sha256(current_password.encode()).hexdigest()
+        new_password =  request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
 
-#         # if old_rem_password == old_password and new_password == confirm_password:
-#         if old_rem_password != hash_old_password:
-#             error_message = "Womp Womp your password is wrong"
-#             return render_template("change_password.html", error_message=error_message, postN_password=new_password, confirm_password=confirm_password)
+        # if old_rem_password == old_password and new_password == confirm_password:
+        if old_rem_password != hash_current_password:
+            error_message = "Womp Womp your password is wrong"
+            return render_template("change_password.html", error_message=error_message, postN_password=new_password, confirmN_password=confirm_password)
         
-#         if new_password != confirm_password:
-#             error_message = "HEY you dont have it the same"
-#             return render_template("change_password.html", error_message=error_message)
+        if new_password != confirm_password:
+            error_message = "HEY you dont have it the same"
+            return render_template("change_password.html", error_message=error_message)
 
-#         new_password = hashlib.sha256(new_password.encode()).hexdigest()
-#         try:
-#             cursor.execute("UPDATE users SET password = %s WHERE user_id = %s", (new_password, user_id))
-#             db.commit()
-#             nice_message = "password succesfully changed"
-#         except Exception as e:
-#             print(f"an Error {e} ocured when connecting to database")
-#             error_message = "password not changed Error with database. Contact backend wizard"
-#             return render_template('change_password.html', error_message=error_message)
+        new_password = hashlib.sha256(new_password.encode()).hexdigest()
+        try:
+            cursor.execute("UPDATE users SET password = %s WHERE user_id = %s", (new_password, user_id))
+            conn.commit()
+            nice_message = "password succesfully changed"
+        except Exception as e:
+            print(f"an Error {e} ocured when connecting to database")
+            error_message = "password not changed Error with database. Contact backend wizard"
+            return render_template('change_password.html', error_message=error_message)
 
-#         return render_template('user.html',message_from=nice_message)
+        return render_template('user.html',error_message=nice_message)
     
-#     return render_template('change_password.html')
+    return render_template('change_password.html')
 
 @app.route('/user/favorite')
 def favorite():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if 'user_id' not in session:
         print("Unauthorized access to /user")
         return redirect(url_for('login'))
@@ -187,6 +215,13 @@ def favorite():
 
 @app.route('/user/history')
 def borrow_history():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if 'user_id' not in session:
         print("Unauthorized access to /user")
         return redirect(url_for('login'))
@@ -208,12 +243,26 @@ def borrow_history():
 
 @app.route('/books')
 def books():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     cursor.execute("SELECT id, title FROM books")
     books = cursor.fetchall()
     return render_template("books.html", books=books)
 
 @app.route('/books/<int:book_id>')
 def book_details(book_id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if request.method == 'POST' and 'user_id' in session:
         review_text = request.form.get('review')
         user_id = session['user_id']
@@ -243,26 +292,42 @@ def book_details(book_id):
 
 @app.route('/books/borrow/<int:book_id>', methods=['POST'])
 def borrow_book(book_id):
-   if 'user_id' not in session:
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+   
+    if 'user_id' not in session:
         print("Unauthorized access to /user")
         return redirect(url_for('login'))
    
-   user_id = session['user_id']
+    user_id = session['user_id']
 
 
-   cursor.execute("SELECT * FROM books WHERE id = %s")
-   book = cursor.fetchone()
-   if not book or not book['pdf_file']:
-       print(f"book id: {book_id} PDF is missing")
-       return "book not found or missing PDF"
+    cursor.execute("SELECT * FROM books WHERE id = %s")
+    book = cursor.fetchone()
+    if not book or not book['pdf_file']:
+        print(f"book id: {book_id} PDF is missing")
+        return "book not found or missing PDF"
  
-   now = datetime.now().isoformat()
-   cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
-   db.commit()
-   return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
+    now = datetime.now().isoformat()
+    cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
+    db.commit()
+    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
 @app.route('/search')
 def search():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+    
     query = request.args.get('query')
 
     if not query:
@@ -280,6 +345,13 @@ def search():
 
 @app.route('/login/admin', methods=['GET', 'POST'])
 def admin_login():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     error_message = None
     if request.method == 'POST':
         admin_password = request.form.get('password')
@@ -308,6 +380,13 @@ def admin_login():
 
 @app.route('/admin')
 def admin_dashboard():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     if 'admin_id' not in session:
         print("Unauthorized access to /admin")
         return redirect(url_for('admin_login'))
@@ -337,6 +416,13 @@ def admin_dashboard():
 
 @app.route('/admin/books/add', methods=['GET', 'POST'])
 def add_book():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     error_message = None
 
     if 'admin_id' not in session:
@@ -382,6 +468,13 @@ def add_book():
 
 @app.route('/admin/books/update/<int:book_id>', methods=['GET', 'POST'])
 def update_book(book_id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
     book = None
     if 'admin_id' not in session:
         print("Unauthorized admin book add attempt")
@@ -462,6 +555,12 @@ def faq():
     return render_template('faq.html')
 
 #---Before---#
+
+@app.teardown_appcontext
+def close_db(error):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
 
 @app.before_request
 def update_last_seen():
