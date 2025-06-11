@@ -156,7 +156,7 @@ def change_password():
     
     if request.method == 'POST':
         user_id = session['user_id']
-        cursor.execute("SELECT password FROM users WHERE user_id = %s", (user_id,))
+        cursor.execute("SELECT password FROM users WHERE id = %s", (user_id,))
         old_rem_password = cursor.fetchone()
         old_rem_password = old_rem_password['password']
         current_password  = request.form.get('current_password')
