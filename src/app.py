@@ -117,7 +117,10 @@ def user():
 @app.route('/user/delete', methods=['POST'])
 def delete_account():
     try:
-        conn = get_db()
+        conn = False
+        while not conn:
+            conn = get_db()
+            time.sleep(1)
         cursor = conn.cursor(dictionary=True)
     except Exception as e:
         print(f"An Error occured with the database {e}")
