@@ -17,7 +17,7 @@ def get_db():
         host = f'{os.getenv('DB_HOST')}',
         database = 'uwu-library'
         )
-        return g.db
+    return db
     
 app = Flask(__name__)
 password_hash = hashlib.sha256()
