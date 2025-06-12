@@ -87,7 +87,7 @@ def register():
         value = (username, email, password_hash, now)
         try:
             cursor.execute(query, value)
-            db.commit()
+            conn.commit()
             print("the register was succesfull")
             print(f"User {username} with email: {email} Registered")
             return redirect(url_for('login'))
@@ -134,7 +134,7 @@ def delete_account():
     cursor.execute("DELETE FROM borrowed_books WHERE user_id = %s", (user_id,))
     cursor.execute("DELETE FROM favorites WHERE user_id = %s", (user_id,))
     cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
-    db.commit()
+    conn.commit()
 
     print(f"User {user_email} deleted their account.")
     session.clear()
@@ -268,7 +268,7 @@ def book_details(book_id):
         user_id = session['user_id']
         query = "INSERT INTO review (user_id, book_id, review_text) VALUES (%s, %s, %s)"
         cursor.execute(query, (user_id, book_id, review_text))
-        db.commit()
+        conn.commit()
     
     # Get book details
     cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
@@ -315,7 +315,7 @@ def borrow_book(book_id):
  
     now = datetime.now().isoformat()
     cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
-    db.commit()
+    conn.commit()
     return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
 
 @app.route('/search')
@@ -457,7 +457,7 @@ def add_book():
 
         try:
             cursor.execute(query, values)
-            db.commit()
+            conn.commit()
             print(f"Admin added book: {title}")
             return redirect(url_for('books'))
         except Exception as e:
@@ -521,7 +521,7 @@ def update_book(book_id):
 
         try:
             cursor.execute(update_query, values)
-            db.commit()
+            conn.commit()
             print(f"Book {book_id} updated by admin")
             return redirect(url_for('book_details', book_id=book_id))
         except Exception as e:
@@ -532,6 +532,12 @@ def update_book(book_id):
 
 @app.route('/admin/books/remove/<int:book_id>', methods=['GET', 'POST'])
 def remove_book(book_id):
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        return render_template("admin_dashboard.html")
     if 'admin_id' not in session:
         print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
@@ -539,7 +545,7 @@ def remove_book(book_id):
     try:
         query = "DELETE FROM books WHERE id = %s"
         cursor.execute(query, (book_id,))
-        db.commit()
+        conn.commit()
         print(f"Book {book_id} removed by admin")
         return redirect(url_for('books'))
     except Exception as e:
@@ -564,12 +570,17 @@ def close_db(error):
 
 @app.before_request
 def update_last_seen():
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
     if 'user_id' in session:
         user_id = session.get('user_id')
         now = datetime.now()
         try:
             cursor.execute("UPDATE users SET last_seen = %s WHERE id = %s", (now, user_id))
-            db.commit()
+            conn.commit()
         except Exception as e:
             print(f"Failed to update last_seen: {e}")
 
