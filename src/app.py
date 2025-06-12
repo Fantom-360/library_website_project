@@ -122,10 +122,12 @@ def delete_account():
             conn = get_db()
             time.sleep(1)
         cursor = conn.cursor(dictionary=True)
+        
     except Exception as e:
         print(f"An Error occured with the database {e}")
         error_message = "There is a problem with connection to database"
         return render_template("user.html", error_message=error_message)
+    
     if 'user_id' not in session:
         print("Unauthorized attempt to delete account")
         return redirect(url_for('login'))
