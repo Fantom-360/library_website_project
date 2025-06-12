@@ -10,12 +10,12 @@ from werkzeug.utils import secure_filename
 import time
 
 def get_db():
-    if 'db' not in g:
-        g.db = mysql.connector.connect(
-            user=f'{os.getenv('DB_USER')}',
-            password = f'{os.getenv('DB_PASSWORD')}',
-            host = f'{os.getenv('DB_HOST')}',
-            database = 'uwu-library'
+    
+    db = mysql.connector.connect(
+        user=f'{os.getenv('DB_USER')}',
+        password = f'{os.getenv('DB_PASSWORD')}',
+        host = f'{os.getenv('DB_HOST')}',
+        database = 'uwu-library'
         )
         return g.db
     
