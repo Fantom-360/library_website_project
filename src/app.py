@@ -312,7 +312,8 @@ def borrow_book(book_id):
     book = cursor.fetchone()
     if not book or not book['pdf_file']:
         print(f"book id: {book_id} PDF is missing")
-        return "book not found or missing PDF"
+        error_message = "there is not a pdf so no borrowing"
+        return render_template('user.html', error_message=error_message)
  
     now = datetime.now().isoformat()
     cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
@@ -454,7 +455,7 @@ def add_book():
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
-        values = (title, author, description, published_year, genre, True, filename, pdf_filename)
+        values = (title, author, description, published_year, genre, filename, pdf_filename)
 
         try:
             cursor.execute(query, values)
@@ -463,7 +464,7 @@ def add_book():
             return redirect(url_for('books'))
         except Exception as e:
             print(f"Error adding book: {e}")
-            error_message = "Error adding book"
+            error_message = f"Error adding book with error:{e}"
 
     return render_template("add_book.html", error_message=error_message)
 
