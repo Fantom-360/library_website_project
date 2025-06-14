@@ -190,6 +190,9 @@ def change_password():
 
 @app.route('/user/favorite')
 def favorite():
+    if 'user_id' not in session:
+        print("Unauthorized access to /user")
+        return redirect(url_for('login'))
     try:
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
@@ -197,9 +200,6 @@ def favorite():
         print(f"An Error occured with the database {e}")
         error_message = "There is a problem with connection to database"
         return render_template("user.html", error_message=error_message)
-    if 'user_id' not in session:
-        print("Unauthorized access to /user")
-        return redirect(url_for('login'))
     
     user_id = session['user_id']
     query = """
@@ -213,6 +213,27 @@ def favorite():
     fav_books = cursor.fetchall()
 
     return render_template("favorites.html", fav_books=fav_books)
+
+@app.route('/user/remove_favorite', methods=['GET', 'POST'])
+def remove_favorite():
+    if 'user_id' not in session:
+        print("Unauthorized access to /user")
+        return redirect(url_for('login'))
+    
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+    
+    user_id = session['user_id']
+
+    if request.method == 'POST':
+
+
+
 
 @app.route('/user/history')
 def borrow_history():
@@ -470,6 +491,7 @@ def add_book():
 
 @app.route('/admin/books/update/<int:book_id>', methods=['GET', 'POST'])
 def update_book(book_id):
+    error_message = None
     try:
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
@@ -537,14 +559,20 @@ def remove_book(book_id):
     try:
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
+
     except Exception as e:
         print(f"An Error occured with the database {e}")
         return render_template("admin_dashboard.html")
+    
     if 'admin_id' not in session:
         print("Unauthorized admin book add attempt")
         return redirect(url_for('admin_login'))
     
     try:
+        cursor.execute("DELETE FROM borrowed_books WHERE book_id = %s", (book_id,))
+        cursor.execute("DELETE FROM favorites WHERE book_id = %s", (book_id,))
+        cursor.execute("DELETE FROM review WHERE book_id = %s", (book_id,))
+
         query = "DELETE FROM books WHERE id = %s"
         cursor.execute(query, (book_id,))
         conn.commit()

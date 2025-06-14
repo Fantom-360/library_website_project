@@ -34,6 +34,7 @@
     <form action="{{ url_for('borrow_book', book_id=book.id) }}" method="POST">
         <button type="submit">Borrow this book</button>
     </form>
+    <form action="{{ url_for('favorite') }}"></form>
 
     
     {% else %}
