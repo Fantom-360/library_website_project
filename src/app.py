@@ -552,7 +552,8 @@ def remove_book(book_id):
         return redirect(url_for('books'))
     except Exception as e:
         print(f"Error removing book {book_id}: {e}")
-        return "something went wrong"
+        error_message = f"Error removing book {book_id}: {e}"
+        return render_template('admin_dashboard.html', error_massage = error_message)
 
 @app.route('/about_us')
 def about_us():
