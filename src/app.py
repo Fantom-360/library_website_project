@@ -308,7 +308,7 @@ def borrow_book(book_id):
     user_id = session['user_id']
 
 
-    cursor.execute("SELECT * FROM books WHERE id = %s")
+    cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
     book = cursor.fetchone()
     if not book or not book['pdf_file']:
         print(f"book id: {book_id} PDF is missing")
