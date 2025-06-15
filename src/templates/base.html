@@ -25,8 +25,13 @@
           <!-- Desktop Menu -->
           <div class="hidden md:flex space-x-6">
             <a href="{{ url_for('home') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Home</a>
-            <a href="{{ url_for('login') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Login</a>
-            <a href="{{ url_for('register') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Register</a>
+            {% if not session.user_id %}
+              <a href="{{ url_for('login') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Login</a>
+              <a href="{{ url_for('register') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Register</a>
+            {% else %}
+              <a href="{{ url_for('user') }}" class="text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 font-medium">My Profile</a>
+              <a href="{{ url_for('logout') }}" class="text-gray-700 dark:text-gray-100 hover:text-red-500 dark:hover:text-red-400 font-medium">Logout</a>
+            {% endif %}
           </div>
 
           <!-- Dark Mode Toggle -->
@@ -50,20 +55,24 @@
         </div>
       </div>
 
-    <!-- Mobile Dropdown Menu -->
-    <div id="mobile-menu" class="hidden md:hidden mt-2 space-y-2">
-    <a href="{{ url_for('home') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Home</a>
-    <a href="{{ url_for('login') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Login</a>
-    <a href="{{ url_for('register') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Register</a>
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobile-menu" class="hidden md:hidden mt-2 space-y-2">
+        <a href="{{ url_for('home') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Home</a>
+        {% if not session.user_id %}
+          <a href="{{ url_for('login') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Login</a>
+          <a href="{{ url_for('register') }}" class="block text-gray-700 hover:text-blue-600 font-medium">Register</a>
+        {% else %}
+          <a href="{{ url_for('user') }}" class="block text-gray-700 hover:text-blue-600 font-medium">My Profile</a>
+          <a href="{{ url_for('logout') }}" class="block text-red-500 hover:text-red-600 font-medium">Logout</a>
+        {% endif %}
+      </div>
     </div>
-  </div>
   </nav>
 
   <!-- Main Content -->
-<div class="w-full h-full mx-auto pt-20 px-4">
-  {% block content %}{% endblock %}
-</div>
-
+  <div class="w-full h-full mx-auto pt-20 px-4">
+    {% block content %}{% endblock %}
+  </div>
 
   <!-- Scripts -->
   <script>
@@ -81,7 +90,7 @@
 
     // Check theme from localStorage or system
     const isDark = localStorage.getItem('theme') === 'dark' || 
-                   (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
     if (isDark) {
       document.documentElement.classList.add('dark');
