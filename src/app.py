@@ -214,8 +214,10 @@ def favorite():
 
     return render_template("favorites.html", fav_books=fav_books)
 
-@app.route('/user/remove_favorite', methods=['GET', 'POST'])
-def remove_favorite():
+@app.route('/user/remove_favorite/<int:book_id>', methods=['GET', 'POST'])
+def remove_favorite(book_id):
+    message = None
+    error_message = None
     if 'user_id' not in session:
         print("Unauthorized access to /user")
         return redirect(url_for('login'))
@@ -228,9 +230,21 @@ def remove_favorite():
         error_message = "There is a problem with connection to database"
         return render_template("user.html", error_message=error_message)
     
-    user_id = session['user_id']
 
     if request.method == 'POST':
+        user_id = session['user_id']
+        try:
+            conn = get_db()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("DELETE FROM favorites WHERE user_id = %s AND book_id = %s", (user_id, book_id))
+            conn.commit()
+            print(f"User {user_id} removed book {book_id}")
+            message = "book removed from favorite"
+        except Exception as e:
+            error_message = f"Error while deleting from_favorite: {e}"
+
+        return redirect(url_for('favorite',error_massage=error_message, message=message ))
+    
 
 
 

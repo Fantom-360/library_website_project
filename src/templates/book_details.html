@@ -34,8 +34,14 @@
     <form action="{{ url_for('borrow_book', book_id=book.id) }}" method="POST">
         <button type="submit">Borrow this book</button>
     </form>
-    <form action="{{ url_for('favorite') }}"></form>
-
+    {% if not favorite %}
+    <form action="{{ url_for('favorite') }}" method="POST">
+        <button type="button">Favorite</button>
+    </form>
+    {% else %}
+    <form action="{{ url_for('remove_favorite', book=id=book.id) }}" method="POST">
+        <button type="button">remove from favorite</button>
+    </form>
     
     {% else %}
     <p><a href="{{ url_for('login') }}">Log in</a> to borrow this book.</p>

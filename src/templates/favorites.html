@@ -3,6 +3,15 @@
 {% block title %}Favorites{% endblock %}
 
 {% block content %}
+
+{% if error_massage %}
+    <p>{{ error_massage }}</p>
+{% endif %}
+
+{% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+
 <div class="max-w-4xl mx-auto py-12 px-4">
     <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 space-y-6">
         <h1 class="text-3xl font-bold text-gray-800 dark:text-white text-center">
