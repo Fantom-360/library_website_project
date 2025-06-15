@@ -39,7 +39,7 @@
         <button type="button">Favorite</button>
     </form>
     {% else %}
-    <form action="{{ url_for('remove_favorite', book=id=book.id) }}" method="POST">
+    <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST">
         <button type="button">remove from favorite</button>
     </form>
     
