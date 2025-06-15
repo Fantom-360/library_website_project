@@ -133,7 +133,7 @@ def delete_account():
 
     # Optional: Delete borrowed_books, favorites, etc. too
     cursor.execute("DELETE FROM borrowed_books WHERE user_id = %s", (user_id,))
-    cursor.execute("DELETE FROM favorites WHERE user_id = %s", (user_id,))
+    cursor.execute("DELETE FROM favourites WHERE user_id = %s", (user_id,))
     cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
     conn.commit()
 
@@ -236,7 +236,7 @@ def remove_favorite(book_id):
         try:
             conn = get_db()
             cursor = conn.cursor(dictionary=True)
-            cursor.execute("DELETE FROM favorites WHERE user_id = %s AND book_id = %s", (user_id, book_id))
+            cursor.execute("DELETE FROM favourites WHERE user_id = %s AND book_id = %s", (user_id, book_id))
             conn.commit()
             print(f"User {user_id} removed book {book_id}")
             message = "book removed from favorite"
@@ -584,7 +584,7 @@ def remove_book(book_id):
     
     try:
         cursor.execute("DELETE FROM borrowed_books WHERE book_id = %s", (book_id,))
-        cursor.execute("DELETE FROM favorites WHERE book_id = %s", (book_id,))
+        cursor.execute("DELETE FROM favourites WHERE book_id = %s", (book_id,))
         cursor.execute("DELETE FROM review WHERE book_id = %s", (book_id,))
 
         query = "DELETE FROM books WHERE id = %s"
