@@ -42,6 +42,7 @@
     <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST">
         <button type="button">remove from favorite</button>
     </form>
+    {% endif %}
     
     {% else %}
     <p><a href="{{ url_for('login') }}">Log in</a> to borrow this book.</p>
