@@ -1,44 +1,30 @@
 {% extends "base.html" %}
-
 {% block title %}Books{% endblock %}
 
 {% block content %}
-
-<div class="max-w-7xl mx-auto py-8 px-4">
-
-  <!-- Search Form -->
-  <form action="{{ url_for('search') }}" method="GET" class="mb-8 flex max-w-md mx-auto">
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <form action="{{ url_for('search') }}" method="GET" class="mb-6 flex space-x-2">
     <input 
       type="text" 
       name="query" 
       placeholder="Search by title or author..." 
       required 
-      class="flex-grow px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-100"
+      class="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
-    <button 
-      type="submit" 
-      class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-r-md hover:bg-blue-700 transition-colors duration-200"
-    >
-      Search
-    </button>
+    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Search</button>
   </form>
 
-  <h1 class="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">All Books</h1>
+  <h1 class="text-3xl font-bold mb-6">All Books</h1>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
     {% for book in books %}
-    <a href="{{ url_for('book_details', book_id=book.id) }}" class="block bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-      <div class="p-4 flex flex-col h-full">
-        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">{{ book.title }}</h2>
-        <p class="text-gray-600 dark:text-gray-300 mb-2">by {{ book.author }}</p>
-        <p class="text-gray-700 dark:text-gray-400 flex-grow truncate">{{ book.description or 'No description available.' }}</p>
-      </div>
-    </a>
-    {% else %}
-    <p class="text-center text-gray-600 dark:text-gray-400 col-span-full">No books found.</p>
+      <li class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-200">
+        <a href="{{ url_for('book_details', book_id=book.id) }}" class="block text-lg font-semibold text-blue-600 dark:text-blue-400 hover:underline">
+          {{ book.title }}
+        </a>
+        <p class="text-gray-600 dark:text-gray-400 mt-1">{{ book.author }}</p>
+      </li>
     {% endfor %}
-  </div>
-
+  </ul>
 </div>
-
 {% endblock %}
