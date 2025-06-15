@@ -34,17 +34,18 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('logout') }}"
-                   class="block text-red-600 hover:text-red-800 transition">
-                    🚪 Logout
-                </a>
-            </li>
-            <li>
                 <a href="{{ url_for('change_password') }}"
                     class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 transition">
                     🔒 <span>Change Password</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ url_for('logout') }}"
+                   class="block text-red-600 hover:text-red-800 transition">
+                    🚪 Logout
+                </a>
+            </li>
+            
         </ul>
 
         <form method="POST" action="{{ url_for('delete_account') }}" class="pt-6">
