@@ -353,8 +353,8 @@ def borrow_book(book_id):
     now = datetime.now().isoformat()
     cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
     conn.commit()
-    
-    return send_from_directory('static/pdfs', book['pdf_file'], as_attachment=True)
+    pdf_path = os.path.join(app.root_path, 'static', 'pdfs')
+    return send_from_directory(pdf_path, book['pdf_file'], as_attachment=True)
 
 @app.route('/search')
 def search():
