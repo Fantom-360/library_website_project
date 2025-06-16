@@ -273,7 +273,7 @@ def add_favorite(book_id):
         error_message = f"Error adding favorite: {e}"
         return render_template('user.html', error_message=error_message)
     
-    return render_template(url_for('favorite'))
+    return redirect(url_for('favorite'))
     
 
 @app.route('/user/history')
