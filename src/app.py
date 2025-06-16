@@ -509,7 +509,7 @@ def add_book():
             else:
                 pdf_filename = secure_filename(pdf_file.filename)
 
-            pdf_path = os.path.join('static', 'pdfs', filename)
+            pdf_path = os.path.join('static', 'pdfs', pdf_filename)
             pdf_file.save(pdf_path)
 
         filename = None
