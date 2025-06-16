@@ -43,7 +43,7 @@
             <button type="submit" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded">Remove from Favorites</button>
           </form>
         {% endif %}
-      {% elif not session.get('admin_id') %}
+      {% else %}
         <p class="text-sm text-gray-500">Please <a href="{{ url_for('login') }}" class="text-blue-600 hover:underline">log in</a> to borrow or favorite this book.</p>
       {% endif %}
     </div>
