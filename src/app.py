@@ -250,6 +250,31 @@ def remove_favorite(book_id):
 
         return redirect(url_for('favorite',error_massage=error_message, message=message ))
     
+@app.route('/user/add_favorite/<int:book_id>', methods=['POST'])
+def add_favorite(book_id):
+    if 'user_id' not in session:
+        print("Unauthorized access to /user")
+        return redirect(url_for('login'))
+    
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+    
+    user_id = session['user_id']
+
+    try:
+        cursor.execute("INSERT INTO favourites (user_id, book_id) VALUES (%s, %s)", (user_id, book_id))
+        conn.commit()
+    except Exception as e:
+        error_message = f"Error adding favorite: {e}"
+        return render_template('user.html', error_message=error_message)
+    
+    return render_template(url_for('favorite'))
+    
 
 @app.route('/user/history')
 def borrow_history():
