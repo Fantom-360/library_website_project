@@ -367,7 +367,7 @@ def borrow_book(book_id):
     pdf_path = os.path.join(app.root_path, 'static', 'pdfs', pdf_filename)
 
     if not pdf_filename or not os.path.exists(pdf_path):
-        error_message = f"Book ID {book_id} PDF file not found: {pdf_filename}"
+        error_message = f"Book ID {book_id} PDF file not found on disk"
         return render_template('user.html', error_message=error_message)
     
     now = datetime.now().isoformat()
