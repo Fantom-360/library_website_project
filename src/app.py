@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, g
+from flask import Flask, render_template, url_for, request, redirect, session, send_from_directory, g, send_file
 import hashlib
 import os
 import plotly.graph_objs as go
