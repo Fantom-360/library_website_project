@@ -22,7 +22,9 @@
             <ul class="space-y-3 text-lg">
                 {% for book in fav_books %}
                     <li class="bg-gray-100 dark:bg-gray-700 px-4 py-2 rounded text-gray-800 dark:text-white shadow-sm">
-                        📖 {{ book.title }}
+                        <a href="{{ url_for(book_details', bokk_id=book.id)}}"> 
+                            📖<strong>{{ book.title }}</strong>
+                        </a>
                     </li>
                 {% endfor %}
             </ul>
