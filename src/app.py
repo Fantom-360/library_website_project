@@ -190,7 +190,7 @@ def change_password():
     
     return render_template('change_password.html')
 
-@app.route('/user/favorite')
+@app.route('/user/favorite', methods=['POST', 'GET'])
 def favorite():
     if 'user_id' not in session:
         print("Unauthorized access to /user")
