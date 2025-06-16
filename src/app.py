@@ -23,7 +23,7 @@ def get_db():
 app = Flask(__name__)
 
 password_hash = hashlib.sha256()
-app.secret_key = 'something123'
+app.secret_key = f'{os.getenv('SECRET_KEY')}'
 
 @app.route('/')
 def home():
@@ -248,9 +248,6 @@ def remove_favorite(book_id):
         return redirect(url_for('favorite',error_massage=error_message, message=message ))
     
 
-
-
-
 @app.route('/user/history')
 def borrow_history():
     try:
@@ -366,8 +363,9 @@ def borrow_book(book_id):
     pdf_filename = book.get('pdf_file')
     pdf_path = os.path.join(app.root_path, 'static', 'pdfs', pdf_filename)
 
+
     if not pdf_filename or not os.path.exists(pdf_path):
-        error_message = f"Book ID {book_id} PDF file not found on disk"
+        error_message = f"Book ID {book_id} PDF file not found: {pdf_filename}"
         return render_template('user.html', error_message=error_message)
     
     now = datetime.now().isoformat()
@@ -501,8 +499,17 @@ def add_book():
         pdf_file= request.files.get('pdf_file')
 
         if pdf_file and pdf_file.filename != '':
-            pdf_filename = secure_filename(pdf_file.filename)
-            pdf_path = os.path.join('static','pdfs', pdf_filename)
+            # pdf_filename = secure_filename(pdf_file.filename)
+            # pdf_path = os.path.join('static','pdfs', pdf_filename)
+            # pdf_file.save(pdf_path)
+            name, ext = os.path.splitext(pdf_file.filename)
+
+            if ext.lower() != '.pdf':
+                filename = secure_filename(name + '.pdf')
+            else:
+                filename = secure_filename(pdf_file.filename)
+
+            pdf_path = os.path.join('static', 'pdfs', filename)
             pdf_file.save(pdf_path)
 
         filename = None
