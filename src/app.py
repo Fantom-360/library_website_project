@@ -505,9 +505,9 @@ def add_book():
             name, ext = os.path.splitext(pdf_file.filename)
 
             if ext.lower() != '.pdf':
-                filename = secure_filename(name + '.pdf')
+                pdf_filename = secure_filename(name + '.pdf')
             else:
-                filename = secure_filename(pdf_file.filename)
+                pdf_filename = secure_filename(pdf_file.filename)
 
             pdf_path = os.path.join('static', 'pdfs', filename)
             pdf_file.save(pdf_path)
@@ -522,7 +522,7 @@ def add_book():
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
-        values = (title, author, description, published_year, genre, filename, filename)
+        values = (title, author, description, published_year, genre, filename, pdf_filename)
 
         try:
             cursor.execute(query, values)
