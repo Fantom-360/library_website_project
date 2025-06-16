@@ -7,6 +7,7 @@ import json
 import mysql.connector
 from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
+
 import time
 
 def get_db():
@@ -20,6 +21,7 @@ def get_db():
     return db
     
 app = Flask(__name__)
+
 password_hash = hashlib.sha256()
 app.secret_key = 'something123'
 
@@ -345,16 +347,38 @@ def borrow_book(book_id):
 
     cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
     book = cursor.fetchone()
-    if not book or not book['pdf_file']:
-        print(f"book id: {book_id} PDF is missing")
-        error_message = "there is not a pdf so no borrowing"
+
+    if not book:
+        error_message = f"Book ID {book_id} not found in database"
         return render_template('user.html', error_message=error_message)
+
+    # if not book or not book['pdf_file']:
+    #     print(f"book id: {book_id} PDF is missing")
+    #     error_message = "there is not a pdf so no borrowing"
+    #     return render_template('user.html', error_message=error_message)
  
+    # now = datetime.now().isoformat()
+    # cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
+    # conn.commit()
+    # pdf_path = os.path.join(app.root_path, 'static', 'pdfs', book['pdf_file'])
+    # return send_file(pdf_path, as_attachment=True)
+
+    pdf_filename = book.get('pdf_file')
+    pdf_path = os.path.join(app.root_path, 'static', 'pdfs', pdf_filename)
+
+    if not pdf_filename or not os.path.exists(pdf_path):
+        error_message = f"Book ID {book_id} PDF file not found on disk"
+        return render_template('user.html', error_message=error_message)
+    
     now = datetime.now().isoformat()
-    cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
-    conn.commit()
-    pdf_path = os.path.join(app.root_path, 'static', 'pdfs')
-    return send_from_directory(pdf_path, book['pdf_file'], as_attachment=True)
+    try:
+        cursor.execute("INSERT INTO borrowed_books (user_id, book_id, borrowed_at) VALUES (%s, %s, %s)", (user_id, book_id, now))
+        conn.commit()
+    except Exception as e:
+        error_message = f"Error inserting into borrowed_books: {e}"
+        return render_template('user.html', error_message=error_message)
+    
+    return send_file(pdf_path, as_attachment=True)
 
 @app.route('/search')
 def search():
