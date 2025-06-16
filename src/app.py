@@ -522,7 +522,7 @@ def add_book():
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
 
-        values = (title, author, description, published_year, genre, filename, pdf_filename)
+        values = (title, author, description, published_year, genre, filename, filename)
 
         try:
             cursor.execute(query, values)
