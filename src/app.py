@@ -210,9 +210,12 @@ def favorite():
         JOIN books b ON f.book_id = b.id
         WHERE f.user_id = %s
     """
-
-    cursor.execute(query, (user_id,))
-    fav_books = cursor.fetchall()
+    try:
+        cursor.execute(query, (user_id,))
+        fav_books = cursor.fetchall()
+    except Exception as a:
+        error_message = f"an error has ocured: {e}"
+        return render_template()
 
     return render_template("favorites.html", fav_books=fav_books)
 

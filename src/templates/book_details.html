@@ -35,7 +35,7 @@
         </form>
 
         {% if not favorite %}
-          <form action="{{ url_for('favorite') }}" method="POST">
+          <form action="{{ url_for('favorite', book_id=book.id) }}" method="POST">
             <button type="submit" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Add to Favorites</button>
           </form>
         {% else %}
