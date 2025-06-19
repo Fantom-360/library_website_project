@@ -88,33 +88,36 @@
     </div>
 
     <!-- Featured Books Section -->
-    <div class="py-12 bg-gray-50 dark:bg-gray-900">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white">Featured Books</h2>
-            <div class="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {% if featured_books %}
-                    {% for book in featured_books %}
-                    <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
-                        {% if book.cover_image %}
-                            <img src="{{ url_for('static', filename='images/' + book.cover_image) }}" alt="{{ book.title }} cover" class="w-full h-auto rounded-lg">
-                        {% else %}
-                            <img src="https://media.istockphoto.com/id/1385337819/cs/vektor/studenti-vyhled%C3%A1vaj%C3%AD-u%C4%8D%C3%AD-se-a-%C4%8Dtou-knihy-v-datab%C3%A1zi.jpg?s=612x612&w=0&k=20&c=vMOZOV9o0fkIVpUOjoDdlunHvj0TD7DOFDtl8UKEiKw=" alt="No cover available" class="w-full h-auto rounded-lg">
-                        {% endif %}
-                        <h3 class="mt-4 text-lg font-bold text-gray-800">{{ book.title }}</h3>
-                        <p class="text-sm text-gray-600">{{ book.author }}</p>
-                        <a href="{{ url_for('book_details', book_id=book.id) }}" class="text-blue-500 hover:underline text-sm mt-2 block">Read more</a>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    {% for _ in range(4) %}
-                    <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
-                        <img src="https://media.istockphoto.com/id/1385337819/cs/vektor/studenti-vyhled%C3%A1vaj%C3%AD-u%C4%8D%C3%AD-se-a-%C4%8Dtou-knihy-v-datab%C3%A1zi.jpg?s=612x612&w=0&k=20&c=vMOZOV9o0fkIVpUOjoDdlunHvj0TD7DOFDtl8UKEiKw=" alt="No books yet" class="w-full h-auto rounded-lg">
-                    </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
+    <!-- Featured Books Section -->
+<div class="py-12 bg-gray-50 dark:bg-gray-900">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center text-gray-800 dark:text-white">Featured Books</h2>
+        <div class="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {% if featured_books %}
+                {% for book in featured_books %}
+                <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
+                    {% if book.cover_image %}
+                        <img src="{{ url_for('static', filename='images/' + book.cover_image) }}" alt="{{ book.title }} cover" class="w-full h-auto rounded-lg">
+                    {% else %}
+                        <img src="https://via.placeholder.com/150x200?text=No+Cover" alt="No cover available" class="w-full h-auto rounded-lg">
+                    {% endif %}
+                    <h3 class="mt-4 text-lg font-bold text-gray-800">{{ book.title }}</h3>
+                    <p class="text-sm text-gray-600">{{ book.author }}</p>
+                    <a href="{{ url_for('book_details', book_id=book.id) }}" class="text-blue-500 hover:underline text-sm mt-2 block">Read more</a>
+                </div>
+                {% endfor %}
+            {% else %}
+                {% for _ in range(4) %}
+                <div class="group relative bg-white p-4 rounded-lg shadow-md transition hover:scale-105">
+                    <img src="https://via.placeholder.com/150x200?text=No+Books+Yet" alt="No books yet" class="w-full h-auto rounded-lg">
+                    <h3 class="mt-4 text-lg font-bold text-gray-800">Coming Soon</h3>
+                    <p class="text-sm text-gray-600">Stay tuned!</p>
+                </div>
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
+</div>
 
 </div>
 {% endblock %}
