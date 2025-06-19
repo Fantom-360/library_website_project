@@ -335,7 +335,7 @@ def books():
 
 @app.route('/books/<int:book_id>')
 def book_details(book_id):
-    is_favorited = False
+    is_favorite = False
     try:
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
