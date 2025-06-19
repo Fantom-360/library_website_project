@@ -378,7 +378,7 @@ def book_details(book_id):
     reviews = cursor.fetchall()
 
     if 'user_id' in session:
-        user_id = ['user_id']
+        user_id = session['user_id']
         cursor.execute("SELECT 1 FROM favourites WHERE user_id = %s AND book_id = %s", (user_id, book_id))
         is_favorite = cursor.fetchone() is not None
 
