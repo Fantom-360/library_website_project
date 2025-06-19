@@ -34,19 +34,40 @@
           <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">Borrow this book</button>
         </form>
 
-        {% if not favorite %}
-          <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST">
-            <button type="submit" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Add to Favorites</button>
-          </form>
+        {% if is_favorite %}
+        <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST">
+          <button type="submit" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded">Remove from Favorites</button>
+        </form>
         {% else %}
-          <form action="{{ url_for('remove_favorite', book_id=book.id) }}" method="POST">
-            <button type="submit" class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded">Remove from Favorites</button>
-          </form>
+        <form action="{{ url_for('add_favorite', book_id=book.id) }}" method="POST">
+          <button type="submit" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded">Add to Favorites</button>
+        </form>
         {% endif %}
+
       {% else %}
         <p class="text-sm text-gray-500">Please <a href="{{ url_for('login') }}" class="text-blue-600 hover:underline">log in</a> to borrow or favorite this book.</p>
       {% endif %}
     </div>
+
   </div>
+    <div class="mt-8">
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Reviews</h2>
+
+        {% if reviews %}
+            <ul class="space-y-4">
+            {% for review in reviews %}
+                <li class="bg-gray-100 dark:bg-gray-700 p-4 rounded shadow">
+                <p class="text-gray-800 dark:text-gray-200 italic">"{{ review.review_text }}"</p>
+                <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    — {{ review.username }}, {{ review.created_at }}
+                </div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-600 dark:text-gray-400">No reviews yet. Be the first to review this book~!</p>
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}

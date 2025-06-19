@@ -27,7 +27,24 @@ app.secret_key = f'{os.getenv('SECRET_KEY')}'
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+    except Exception as e:
+        print(f"An Error occured with the database {e}")
+        error_message = "There is a problem with connection to database"
+        return render_template("user.html", error_message=error_message)
+    
+    cursor.execute("""
+        SELECT b.*, COUNT(f.book_id) AS fav_count
+        FROM books b
+        LEFT JOIN favourites f ON b.id = f.book_id
+        GROUP BY b.id
+        ORDER BY fav_count DESC
+        LIMIT 4
+    """)
+    featured_books = cursor.fetchall()
+    return render_template('index.html', featured_books=featured_books)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -273,8 +290,7 @@ def add_favorite(book_id):
         error_message = f"Error adding favorite: {e}"
         return render_template('user.html', error_message=error_message)
     
-    return redirect(url_for('favorite'))
-    
+    return redirect(url_for('favorite'))   
 
 @app.route('/user/history')
 def borrow_history():
@@ -319,6 +335,7 @@ def books():
 
 @app.route('/books/<int:book_id>')
 def book_details(book_id):
+    is_favorited = False
     try:
         conn = get_db()
         cursor = conn.cursor(dictionary=True)
@@ -329,9 +346,17 @@ def book_details(book_id):
     if request.method == 'POST' and 'user_id' in session:
         review_text = request.form.get('review')
         user_id = session['user_id']
-        query = "INSERT INTO review (user_id, book_id, review_text) VALUES (%s, %s, %s)"
-        cursor.execute(query, (user_id, book_id, review_text))
-        conn.commit()
+        if review_text:
+            try:
+                cursor.execute(
+                    "INSERT INTO review (user_id, book_id, review_text) VALUES (%s, %s, %s)",
+                    (user_id, book_id, review_text)
+                )
+                conn.commit()
+            except Exception as e:
+                error_message = f"error in writing rewview: {e}"
+                return render_template('user.html', error_message=error_message)
+
     
     # Get book details
     cursor.execute("SELECT * FROM books WHERE id = %s", (book_id,))
@@ -339,7 +364,8 @@ def book_details(book_id):
 
     if not book:
         print(f"Book: {book} was not founf")
-        return "Book not found", 404
+        error_message =  "Book not found 404"
+        return render_template('user.html', error_message=error_message)
     
     # Fetch reviews for this book
     cursor.execute("""
@@ -351,7 +377,12 @@ def book_details(book_id):
     """, (book_id,))
     reviews = cursor.fetchall()
 
-    return render_template("book_details.html", book=book, reviews=reviews)
+    if 'user_id' in session:
+        user_id = ['user_id']
+        cursor.execute("SELECT 1 FROM favourites WHERE user_id = %s AND book_id = %s", (user_id, book_id))
+        is_favorite = cursor.fetchone() is not None
+
+    return render_template("book_details.html", book=book, reviews=reviews, is_favorite=is_favorite)
 
 @app.route('/books/borrow/<int:book_id>', methods=['POST'])
 def borrow_book(book_id):
